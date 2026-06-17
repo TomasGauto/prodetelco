@@ -31,7 +31,9 @@ jobs:
         run: npm ci
 
       - name: Escribir credenciales de Firebase
-        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > sa.json
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: printf '%s' "$SA_JSON" > sa.json
 
       - name: Actualizar resultados y recalcular ranking
         env:
