@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import puntajesData from '../data/puntajes.json';
+import { useDtPuntajes } from '../hooks/useDtPuntajes';
 import {
   collection, getDocs, doc, getDoc, setDoc, serverTimestamp,
 } from 'firebase/firestore';
@@ -48,6 +48,7 @@ const fitFormation = (squad, fromFormation, toFormation) => {
 
 const DT = () => {
   const { currentUser } = useAuth();
+  const { matches: puntajesData, index: dtIndex } = useDtPuntajes();
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -402,7 +403,7 @@ const DT = () => {
             })()}
           </div>
         ) : view === 'others' ? (
-          <OtherDTs playersMap={playersMap} currentUid={currentUser.uid} />
+          <OtherDTs playersMap={playersMap} currentUid={currentUser.uid} pointsIndex={dtIndex} />
         ) : (
         <>
         {/* Status bar */}

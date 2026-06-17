@@ -120,6 +120,11 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    match /dt/{docId} {
+      allow read: if isAuthenticated();
+      allow write: if false; // solo el cron (admin SDK) escribe los puntajes
+    }
+
     match /predictions/{predictionId} {
       allow read: if isAuthenticated();
       allow write: if isAuthenticated()

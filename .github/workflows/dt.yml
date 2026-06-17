@@ -1,0 +1,38 @@
+name: Puntajes DT
+
+# Scrapea ESPN y calcula los puntajes del DT, escribiéndolos en Firestore (dt/puntajes).
+# Corre en la nube, sin depender de ninguna PC.
+# 07:00 UTC = 04:00 ART.
+on:
+  schedule:
+    - cron: '0 7 * * *'   # 04:00 ART
+  workflow_dispatch:
+
+concurrency:
+  group: dt-puntajes
+  cancel-in-progress: false
+
+jobs:
+  dt:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Escribir credenciales de Firebase
+        env:
+          SA_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: printf '%s' "$SA_JSON" > sa.json
+
+      - name: Scrapear ESPN y puntuar el DT
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./sa.json
+        run: node dtAuto.js

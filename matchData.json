@@ -1,0 +1,299 @@
+[
+  {
+    "id": "MEX_RSA", "home": "MEX", "away": "RSA", "score": "2-0",
+    "mvp": { "name": "Julián Quiñones", "team": "MEX" },
+    "analysis": "Debut físico y caliente con tres expulsiones. México fue más y lo liquidó con goles de Quiñones y Raúl Jiménez pese a quedar con diez.",
+    "homeXI": ["Luis Ángel Malagón", "Jorge Sánchez", "César Montes", "Johan Vásquez", "Jesús Gallardo", "Edson Álvarez", "Erik Lira", "Luis Chávez", "Roberto Alvarado", "Julián Quiñones", "Raúl Jiménez"],
+    "awayXI": ["Ronwen Williams", "Khuliso Mudau", "Mbekezeli Mbokazi", "Nkosinathi Sibisi", "Aubrey Modiba", "Teboho Mokoena", "Sphephelo Sithole", "Thalente Mbatha", "Oswin Appollis", "Mihlali Mayambela", "Evidence Makgopa"],
+    "homeSubs": [], "awaySubs": ["Themba Zwane"],
+    "goals": [
+      { "scorer": "Julián Quiñones", "team": "MEX", "assist": "Erik Lira" },
+      { "scorer": "Raúl Jiménez", "team": "MEX", "assist": "Roberto Alvarado" }
+    ],
+    "yellows": [{ "name": "Teboho Mokoena", "team": "RSA" }],
+    "reds": [{ "name": "Sphephelo Sithole", "team": "RSA" }, { "name": "Themba Zwane", "team": "RSA" }, { "name": "César Montes", "team": "MEX" }]
+  },
+  {
+    "id": "KOR_CZE", "home": "KOR", "away": "CZE", "score": "2-1",
+    "mvp": { "name": "Hwang In-beom", "team": "KOR" },
+    "analysis": "Corea lo dio vuelta: Hwang In-beom empató y Oh Hyeon-gyu, desde el banco, marcó el triunfo. Krejcí había abierto el marcador para Chequia.",
+    "homeXI": ["Kim Seung-gyu", "Lee Han-beom", "Kim Min-jae", "Lee Gi-hyuk", "Seol Young-woo", "Hwang In-beom", "Paik Seung-ho", "Lee Tae-seok", "Lee Kang-in", "Lee Jae-sung", "Son Heung-min"],
+    "awayXI": ["Matej Kovar", "Vladimir Coufal", "David Doudera", "Tomas Holes", "Ladislav Krejci", "Jaroslav Zeleny", "Tomas Soucek", "Michal Sadilek", "Adam Hlozek", "Pavel Sulc", "Patrik Schick"],
+    "homeSubs": ["Oh Hyeon-gyu"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Ladislav Krejci", "team": "CZE", "assist": null },
+      { "scorer": "Hwang In-beom", "team": "KOR", "assist": null },
+      { "scorer": "Oh Hyeon-gyu", "team": "KOR", "assist": "Hwang In-beom" }
+    ],
+    "yellows": [{ "name": "Lee Gi-hyuk", "team": "KOR" }, { "name": "Tomas Soucek", "team": "CZE" }],
+    "reds": []
+  },
+  {
+    "id": "CAN_BIH", "home": "CAN", "away": "BIH", "score": "1-1",
+    "mvp": { "name": "Cyle Larin", "team": "CAN" },
+    "analysis": "Bosnia golpeó primero con Lukic. Larin rescató un punto para el local sobre el cierre.",
+    "homeXI": ["Maxime Crépeau", "Alistair Johnston", "Luc de Fougerolles", "Derek Cornelius", "Richie Laryea", "Tajon Buchanan", "Stephen Eustáquio", "Ismaël Koné", "Liam Millar", "Jonathan David", "Cyle Larin"],
+    "awayXI": ["Nikola Vasilj", "Amar Dedić", "Nikola Katić", "Tarik Muharemović", "Sead Kolašinac", "Esmir Bajraktarević", "Benjamin Tahirović", "Ivan Bašić", "Amar Memić", "Ermedin Demirović", "Jovo Lukić"],
+    "homeSubs": [], "awaySubs": [],
+    "goals": [
+      { "scorer": "Cyle Larin", "team": "CAN", "assist": null },
+      { "scorer": "Jovo Lukić", "team": "BIH", "assist": null }
+    ],
+    "yellows": [{ "name": "Benjamin Tahirović", "team": "BIH" }, { "name": "Ismaël Koné", "team": "CAN" }],
+    "reds": []
+  },
+  {
+    "id": "USA_PAR", "home": "USA", "away": "PAR", "score": "4-1",
+    "mvp": { "name": "Folarin Balogun", "team": "USA" },
+    "analysis": "Dominio total de Estados Unidos. Doblete de Balogun, un autogol de Bobadilla y el sello de Reyna. Paraguay apenas descontó con Maurício.",
+    "homeXI": ["Matt Freese", "Alex Freeman", "Chris Richards", "Tim Ream", "Antonee Robinson", "Tyler Adams", "Weston McKennie", "Sergiño Dest", "Malik Tillman", "Christian Pulisic", "Folarin Balogun"],
+    "awayXI": ["Roberto Fernández", "Damián Bobadilla", "Gustavo Gómez", "Omar Alderete", "Juan José Cáceres", "Andrés Cubas", "Diego Gómez", "Mathías Villasanti", "Miguel Almirón", "Julio Enciso", "Antonio Sanabria"],
+    "homeSubs": ["Giovanni Reyna"], "awaySubs": ["Maurício"],
+    "goals": [
+      { "scorer": "Damián Bobadilla", "team": "PAR", "assist": null, "og": true },
+      { "scorer": "Folarin Balogun", "team": "USA", "assist": "Christian Pulisic" },
+      { "scorer": "Folarin Balogun", "team": "USA", "assist": null },
+      { "scorer": "Maurício", "team": "PAR", "assist": null },
+      { "scorer": "Giovanni Reyna", "team": "USA", "assist": "Alex Freeman" }
+    ],
+    "yellows": [{ "name": "Junior Alonso", "team": "PAR" }],
+    "reds": []
+  },
+  {
+    "id": "QAT_SUI", "home": "QAT", "away": "SUI", "score": "1-1",
+    "mvp": { "name": "Breel Embolo", "team": "SUI" },
+    "analysis": "Suiza fue más con un penal de Embolo, pero Qatar le sacó un empate agónico (autogol de Muheim sobre la hora).",
+    "homeXI": ["Mahmoud Abunada", "Pedro Miguel", "Boualem Khoukhi", "Issa Laye", "Ahmed Fathy", "Homam Ahmed", "Karim Boudiaf", "Ahmed Alaaeldin", "Mohamed Manai", "Hassan Al-Haydos", "Akram Afif"],
+    "awayXI": ["Gregor Kobel", "Miro Muheim", "Nico Elvedi", "Manuel Akanji", "Denis Zakaria", "Ardon Jashari", "Fabian Rieder", "Granit Xhaka", "Johan Manzambi", "Zeki Amdouni", "Breel Embolo"],
+    "homeSubs": [], "awaySubs": [],
+    "goals": [
+      { "scorer": "Breel Embolo", "team": "SUI", "assist": null, "pen": true },
+      { "scorer": "Miro Muheim", "team": "SUI", "assist": null, "og": true }
+    ],
+    "yellows": [],
+    "reds": []
+  },
+  {
+    "id": "BRA_MAR", "home": "BRA", "away": "MAR", "score": "1-1",
+    "mvp": { "name": "Vinicius Junior", "team": "BRA" },
+    "analysis": "Marruecos sorprendió con Saibari y Brasil sudó el empate con Vinícius. Mucha fricción.",
+    "homeXI": ["Alisson", "Douglas Santos", "Gabriel Magalhaes", "Marquinhos", "Roger Ibanez", "Casemiro", "Bruno Guimaraes", "Lucas Paqueta", "Vinicius Junior", "Raphinha", "Igor Thiago"],
+    "awayXI": ["Bono", "Achraf Hakimi", "Chadi Riad", "Issa Diop", "Noussair Mazraoui", "Ayyoub Bouaddi", "Azzedine Ounahi", "Bilal El Khannouss", "Brahim Diaz", "Neil El Aynaoui", "Ismael Saibari"],
+    "homeSubs": ["Danilo Luiz", "Matheus Cunha", "Luiz Henrique"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Ismael Saibari", "team": "MAR", "assist": "Brahim Diaz" },
+      { "scorer": "Vinicius Junior", "team": "BRA", "assist": "Bruno Guimaraes" }
+    ],
+    "yellows": [{ "name": "Casemiro", "team": "BRA" }, { "name": "Roger Ibanez", "team": "BRA" }],
+    "reds": []
+  },
+  {
+    "id": "HAI_SCO", "home": "HAI", "away": "SCO", "score": "0-1",
+    "mvp": { "name": "John McGinn", "team": "SCO" },
+    "analysis": "Haití aguantó con orden pero McGinn lo destrabó con un zurdazo desviado. Escocia se llevó los tres puntos.",
+    "homeXI": ["Johny Placide", "Carlens Arcus", "Ricardo Ade", "Hannes Delcroix", "Martin Experience", "Jean-Ricner Bellegarde", "Danley Jean Jacques", "Louicius Deedson", "Ruben Providence", "Wilson Isidor", "Frantzdy Pierrot"],
+    "awayXI": ["Angus Gunn", "Aaron Hickey", "Grant Hanley", "Jack Hendry", "Andy Robertson", "Scott McTominay", "Lewis Ferguson", "John McGinn", "Ben Gannon-Doak", "Che Adams", "Lawrence Shankland"],
+    "homeSubs": [], "awaySubs": [],
+    "goals": [{ "scorer": "John McGinn", "team": "SCO", "assist": "Ben Gannon-Doak" }],
+    "yellows": [],
+    "reds": []
+  },
+  {
+    "id": "AUS_TUR", "home": "AUS", "away": "TUR", "score": "2-0",
+    "mvp": { "name": "Patrick Beach", "team": "AUS" },
+    "analysis": "Turquía remató más de 30 veces pero se estrelló contra Beach. Australia golpeó de contra con Irankunda y Metcalfe.",
+    "homeXI": ["Patrick Beach", "Alessandro Circati", "Harry Souttar", "Cameron Burgess", "Jacob Italiano", "Jordan Bos", "Connor Metcalfe", "Aiden O'Neill", "Paul Okon-Engstler", "Nestory Irankunda", "Mohamed Toure"],
+    "awayXI": ["Ugurcan Cakir", "Zeki Celik", "Merih Demiral", "Abdulkerim Bardakci", "Ferdi Kadioglu", "Ismail Yuksek", "Hakan Calhanoglu", "Arda Guler", "Orkun Kokcu", "Baris Alper Yilmaz", "Kerem Akturkoglu"],
+    "homeSubs": [], "awaySubs": ["Yunus Akgun"],
+    "goals": [
+      { "scorer": "Nestory Irankunda", "team": "AUS", "assist": null },
+      { "scorer": "Connor Metcalfe", "team": "AUS", "assist": null }
+    ],
+    "yellows": [{ "name": "Yunus Akgun", "team": "TUR" }],
+    "reds": []
+  },
+  {
+    "id": "GER_CUW", "home": "GER", "away": "CUW", "score": "7-1",
+    "mvp": { "name": "Kai Havertz", "team": "GER" },
+    "analysis": "Goleada alemana. Curazao empató un rato con Comenencia y después se desbordó. Undav, desde el banco, hizo un gol y dos asistencias.",
+    "homeXI": ["Manuel Neuer", "Joshua Kimmich", "Jonathan Tah", "Nico Schlotterbeck", "Nathaniel Brown", "Aleksandar Pavlovic", "Felix Nmecha", "Leroy Sané", "Jamal Musiala", "Florian Wirtz", "Kai Havertz"],
+    "awayXI": ["Eloy Room", "Sherel Floranus", "Armando Obispo", "Riechedly Bazoer", "Deveron Fonville", "Leandro Bacuna", "Livano Comenencia", "Juninho Bacuna", "Tahith Chong", "Jürgen Locadia", "Sontje Hansen"],
+    "homeSubs": ["Deniz Undav", "Antonio Rüdiger", "David Raum", "Leon Goretzka", "Waldemar Anton"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Felix Nmecha", "team": "GER", "assist": "Florian Wirtz" },
+      { "scorer": "Livano Comenencia", "team": "CUW", "assist": null },
+      { "scorer": "Nico Schlotterbeck", "team": "GER", "assist": "Nathaniel Brown" },
+      { "scorer": "Kai Havertz", "team": "GER", "assist": null, "pen": true },
+      { "scorer": "Jamal Musiala", "team": "GER", "assist": "Joshua Kimmich" },
+      { "scorer": "Nathaniel Brown", "team": "GER", "assist": "Deniz Undav" },
+      { "scorer": "Deniz Undav", "team": "GER", "assist": "Joshua Kimmich" },
+      { "scorer": "Kai Havertz", "team": "GER", "assist": "Deniz Undav" }
+    ],
+    "yellows": [],
+    "reds": []
+  },
+  {
+    "id": "CIV_ECU", "home": "CIV", "away": "ECU", "score": "1-0",
+    "mvp": { "name": "Amad Diallo", "team": "CIV" },
+    "analysis": "Duelo cerrado. Amad Diallo, ingresado desde el banco, lo ganó en el 90' con asistencia de Singo, cortando el invicto de Ecuador.",
+    "homeXI": ["Yahia Fofana", "Guéla Doué", "Emmanuel Agbadou", "Wilfried Singo", "Ghislain Konan", "Yan Diomande", "Franck Kessié", "Seko Fofana", "Bazoumana Touré", "Nicolas Pépé", "Elye Wahi"],
+    "awayXI": ["Hernán Galíndez", "Joel Ordóñez", "Willian Pacho", "Piero Hincapié", "Pedro Vite", "Moisés Caicedo", "Alan Minda", "Alan Franco", "Gonzalo Plata", "Enner Valencia", "John Yeboah"],
+    "homeSubs": ["Amad Diallo"], "awaySubs": [],
+    "goals": [{ "scorer": "Amad Diallo", "team": "CIV", "assist": "Wilfried Singo" }],
+    "yellows": [{ "name": "Seko Fofana", "team": "CIV" }, { "name": "Franck Kessié", "team": "CIV" }, { "name": "Guéla Doué", "team": "CIV" }],
+    "reds": []
+  },
+  {
+    "id": "NED_JPN", "home": "NED", "away": "JPN", "score": "2-2",
+    "mvp": { "name": "Keito Nakamura", "team": "JPN" },
+    "analysis": "Partidazo. Países Bajos se adelantó dos veces (van Dijk y Summerville) y Japón lo empató dos veces, la última con Kamada al 89'.",
+    "homeXI": ["Bart Verbruggen", "Denzel Dumfries", "Jan Paul van Hecke", "Virgil van Dijk", "Micky van de Ven", "Frenkie de Jong", "Ryan Gravenberch", "Tijjani Reijnders", "Crysencio Summerville", "Cody Gakpo", "Donyell Malen"],
+    "awayXI": ["Zion Suzuki", "Tsuyoshi Watanabe", "Shogo Taniguchi", "Hiroki Ito", "Takefusa Kubo", "Ritsu Doan", "Kaishu Sano", "Daizen Maeda", "Daichi Kamada", "Keito Nakamura", "Ayase Ueda"],
+    "homeSubs": [], "awaySubs": [],
+    "goals": [
+      { "scorer": "Virgil van Dijk", "team": "NED", "assist": "Ryan Gravenberch" },
+      { "scorer": "Keito Nakamura", "team": "JPN", "assist": "Takefusa Kubo" },
+      { "scorer": "Crysencio Summerville", "team": "NED", "assist": "Ryan Gravenberch" },
+      { "scorer": "Daichi Kamada", "team": "JPN", "assist": null }
+    ],
+    "yellows": [{ "name": "Micky van de Ven", "team": "NED" }],
+    "reds": []
+  },
+  {
+    "id": "SWE_TUN", "home": "SWE", "away": "TUN", "score": "5-1",
+    "mvp": { "name": "Yasin Ayari", "team": "SWE" },
+    "analysis": "Recital sueco con doblete de Ayari y goles de Isak, Gyökeres y Svanberg. Túnez apenas descontó con Rekik.",
+    "homeXI": ["Kristoffer Nordfeldt", "Gustaf Lagerbielke", "Isak Hien", "Victor Lindelöf", "Alexander Bernhardsson", "Jesper Karlström", "Yasin Ayari", "Gabriel Gudmundsson", "Benjamin Nygren", "Viktor Gyökeres", "Alexander Isak"],
+    "awayXI": ["Abdelmouhib Chamakh", "Omar Rekik", "Montassar Talbi", "Amine Ben Hamida", "Yan Valery", "Rani Khedira", "Ellyes Skhiri", "Anis Ben Slimane", "Ali Abdi", "Hannibal Mejbri", "Elias Saad"],
+    "homeSubs": ["Mattias Svanberg", "Lucas Bergvall"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Yasin Ayari", "team": "SWE", "assist": null },
+      { "scorer": "Alexander Isak", "team": "SWE", "assist": null },
+      { "scorer": "Omar Rekik", "team": "TUN", "assist": "Hannibal Mejbri" },
+      { "scorer": "Viktor Gyökeres", "team": "SWE", "assist": "Alexander Isak" },
+      { "scorer": "Mattias Svanberg", "team": "SWE", "assist": "Alexander Isak" },
+      { "scorer": "Yasin Ayari", "team": "SWE", "assist": "Lucas Bergvall" }
+    ],
+    "yellows": [{ "name": "Rani Khedira", "team": "TUN" }],
+    "reds": []
+  },
+  {
+    "id": "BEL_EGY", "home": "BEL", "away": "EGY", "score": "1-1",
+    "mvp": { "name": "Emam Ashour", "team": "EGY" },
+    "analysis": "Egipto anuló a Bélgica y se adelantó con Ashour (asistencia de Salah). Los belgas empataron por un autogol de Hany forzado por Lukaku.",
+    "homeXI": ["Thibaut Courtois", "Thomas Meunier", "Nathan Ngoy", "Brandon Mechele", "Timothy Castagne", "Amadou Onana", "Youri Tielemans", "Leandro Trossard", "Kevin De Bruyne", "Jeremy Doku", "Charles De Ketelaere"],
+    "awayXI": ["Mostafa Shobeir", "Mohamed Hany", "Yasser Ibrahim", "Hamdi Fathy", "Ahmed Fatouh", "Mohanad Lashin", "Marwan Attia", "Emam Ashour", "Mostafa Zico", "Mohamed Salah", "Omar Marmoush"],
+    "homeSubs": ["Romelu Lukaku"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Emam Ashour", "team": "EGY", "assist": "Mohamed Salah" },
+      { "scorer": "Mohamed Hany", "team": "EGY", "assist": null, "og": true }
+    ],
+    "yellows": [{ "name": "Marwan Attia", "team": "EGY" }, { "name": "Ahmed Fatouh", "team": "EGY" }],
+    "reds": []
+  },
+  {
+    "id": "ESP_CPV", "home": "ESP", "away": "CPV", "score": "0-0",
+    "mvp": { "name": "Vozinha", "team": "CPV" },
+    "analysis": "España tuvo la pelota pero sin profundidad. Cabo Verde firmó un 0-0 histórico con Vozinha como héroe bajo los palos.",
+    "homeXI": ["Unai Simon", "Marcos Llorente", "Pau Cubarsi", "Aymeric Laporte", "Marc Cucurella", "Fabian Ruiz", "Rodri", "Pedri", "Ferran Torres", "Mikel Oyarzabal", "Gavi"],
+    "awayXI": ["Vozinha", "Steven Moreira", "Roberto Lopes", "Diney Borges", "Sidny Lopes Cabral", "Kevin Pina", "Ryan Mendes", "Laros Duarte", "Jamiro Monteiro", "Jovane Cabral", "Dailon Livramento"],
+    "homeSubs": ["Mikel Merino", "Lamine Yamal", "Dani Olmo", "Nico Williams"], "awaySubs": [],
+    "goals": [],
+    "yellows": [{ "name": "Sidny Lopes Cabral", "team": "CPV" }],
+    "reds": []
+  },
+  {
+    "id": "KSA_URU", "home": "KSA", "away": "URU", "score": "1-1",
+    "mvp": { "name": "Mohammed Al-Owais", "team": "KSA" },
+    "analysis": "Uruguay atacó sin descanso pero chocó contra Al-Owais. Al-Amri puso adelante a los saudíes y Maxi Araújo igualó.",
+    "homeXI": ["Mohammed Al-Owais", "Saud Abdulhamid", "Hassan Al-Tambakti", "Abdulelah Al-Amri", "Moteb Al-Harbi", "Mohammed Abu Al-Shamat", "Mohamed Kanno", "Abdullah Al-Khaibari", "Salem Al-Dawsari", "Feras Al-Brikan", "Musab Al-Juwayr"],
+    "awayXI": ["Fernando Muslera", "Guillermo Varela", "Sebastian Caceres", "Mathias Olivera", "Matias Vina", "Federico Valverde", "Manuel Ugarte", "Rodrigo Bentancur", "Maximiliano Araujo", "Federico Vinas", "Darwin Nunez"],
+    "homeSubs": [], "awaySubs": ["Agustín Canobbio", "Nicolás de la Cruz", "Brian Rodríguez", "Rodrigo Aguirre", "Juan Sanabria"],
+    "goals": [
+      { "scorer": "Abdulelah Al-Amri", "team": "KSA", "assist": "Mohamed Kanno" },
+      { "scorer": "Maximiliano Araujo", "team": "URU", "assist": "Federico Vinas" }
+    ],
+    "yellows": [{ "name": "Abdulelah Al-Amri", "team": "KSA" }, { "name": "Maximiliano Araujo", "team": "URU" }],
+    "reds": []
+  },
+  {
+    "id": "IRN_NZL", "home": "IRN", "away": "NZL", "score": "2-2",
+    "mvp": { "name": "Elijah Just", "team": "NZL" },
+    "analysis": "Ida y vuelta. Elijah Just hizo un doblete (dos asistencias de Chris Wood) y Rezaeian y Mohebbi respondieron para Irán.",
+    "homeXI": ["Alireza Beiranvand", "Ramin Rezaeian", "Ali Nemati", "Shoja Khalilzadeh", "Milad Mohammadi", "Aria Yousefi", "Saman Ghoddos", "Saeid Ezatolahi", "Mohammad Mohebbi", "Shahriar Moghanlou", "Mehdi Taremi"],
+    "awayXI": ["Max Crocombe", "Tim Payne", "Finn Surman", "Michael Boxall", "Liberato Cacace", "Joe Bell", "Marko Stamenic", "Callum McCowatt", "Sarpreet Singh", "Elijah Just", "Chris Wood"],
+    "homeSubs": ["Ehsan Hajsafi"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Elijah Just", "team": "NZL", "assist": "Chris Wood" },
+      { "scorer": "Ramin Rezaeian", "team": "IRN", "assist": "Saman Ghoddos" },
+      { "scorer": "Elijah Just", "team": "NZL", "assist": "Chris Wood" },
+      { "scorer": "Mohammad Mohebbi", "team": "IRN", "assist": "Ramin Rezaeian" }
+    ],
+    "yellows": [{ "name": "Ehsan Hajsafi", "team": "IRN" }],
+    "reds": []
+  },
+  {
+    "id": "FRA_SEN", "home": "FRA", "away": "SEN", "score": "3-1",
+    "mvp": { "name": "Kylian Mbappé", "team": "FRA" },
+    "analysis": "Francia controló y goleó. Doblete de Mbappé y gol de Barcola desde el banco. Senegal apenas descontó con Mbaye en tiempo cumplido.",
+    "homeXI": ["Mike Maignan", "Jules Koundé", "Dayot Upamecano", "William Saliba", "Théo Hernández", "Aurélien Tchouaméni", "Adrien Rabiot", "Michael Olise", "Ousmane Dembélé", "Désiré Doué", "Kylian Mbappé"],
+    "awayXI": ["Édouard Mendy", "Krépin Diatta", "Kalidou Koulibaly", "Moussa Niakhaté", "El Hadji Malick Diouf", "Lamine Camara", "Idrissa Gana Gueye", "Pape Gueye", "Ismaïla Sarr", "Nicolas Jackson", "Sadio Mané"],
+    "homeSubs": ["Bradley Barcola", "Rayan Cherki"], "awaySubs": ["Ibrahim Mbaye", "Iliman Ndiaye"],
+    "goals": [
+      { "scorer": "Kylian Mbappé", "team": "FRA", "assist": "Michael Olise" },
+      { "scorer": "Bradley Barcola", "team": "FRA", "assist": "Adrien Rabiot" },
+      { "scorer": "Ibrahim Mbaye", "team": "SEN", "assist": "Iliman Ndiaye" },
+      { "scorer": "Kylian Mbappé", "team": "FRA", "assist": null }
+    ],
+    "yellows": [],
+    "reds": []
+  },
+  {
+    "id": "IRQ_NOR", "home": "IRQ", "away": "NOR", "score": "1-4",
+    "mvp": { "name": "Erling Haaland", "team": "NOR" },
+    "analysis": "Haaland hizo un doblete y liquidó temprano. Aymen Hussein vivió contrastes: marcó el de Irak y, ya goleado, hizo un autogol.",
+    "homeXI": ["Jalal Hassan", "Hussein Ali", "Zaid Tahseen", "Akam Hashem", "Merchas Doski", "Ibrahim Bayesh", "Zaid Ismael", "Amir Al-Ammari", "Ali Jasim", "Aymen Hussein", "Ali Al-Hamadi"],
+    "awayXI": ["Ørjan Nyland", "Julian Ryerson", "Kristoffer Ajer", "Torbjørn Heggem", "David Møller Wolfe", "Sander Berge", "Martin Ødegaard", "Fredrik Aursnes", "Alexander Sørloth", "Erling Haaland", "Antonio Nusa"],
+    "homeSubs": [], "awaySubs": ["Leo Østigård"],
+    "goals": [
+      { "scorer": "Erling Haaland", "team": "NOR", "assist": "David Møller Wolfe" },
+      { "scorer": "Aymen Hussein", "team": "IRQ", "assist": "Amir Al-Ammari" },
+      { "scorer": "Erling Haaland", "team": "NOR", "assist": null },
+      { "scorer": "Leo Østigård", "team": "NOR", "assist": "Martin Ødegaard" },
+      { "scorer": "Aymen Hussein", "team": "IRQ", "assist": null, "og": true }
+    ],
+    "yellows": [{ "name": "Zaid Tahseen", "team": "IRQ" }],
+    "reds": []
+  },
+  {
+    "id": "ARG_ALG", "home": "ARG", "away": "ALG", "score": "3-0",
+    "mvp": { "name": "Lionel Messi", "team": "ARG" },
+    "analysis": "Exhibición del campeón. Messi marcó un hat-trick e igualó el récord histórico de goleadores mundialistas (16, como Klose).",
+    "homeXI": ["Emiliano Martínez", "Gonzalo Montiel", "Cristian Romero", "Lisandro Martínez", "Facundo Medina", "Rodrigo De Paul", "Enzo Fernández", "Alexis Mac Allister", "Lionel Messi", "Lautaro Martínez", "Thiago Almada"],
+    "awayXI": ["Luca Zidane", "Rafik Belghali", "Aïssa Mandi", "Ramy Bensebaini", "Rayan Aït-Nouri", "Hicham Boudaoui", "Nabil Bentaleb", "Fares Chaibi", "Riyad Mahrez", "Amine Gouiri", "Mohamed Amoura"],
+    "homeSubs": ["Nicolás González", "Nahuel Molina", "Julián Álvarez", "Nico Paz", "Nicolás Otamendi"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Lionel Messi", "team": "ARG", "assist": "Rodrigo De Paul" },
+      { "scorer": "Lionel Messi", "team": "ARG", "assist": "Alexis Mac Allister" },
+      { "scorer": "Lionel Messi", "team": "ARG", "assist": "Nicolás González" }
+    ],
+    "yellows": [],
+    "reds": []
+  },
+  {
+    "id": "AUT_JOR", "home": "AUT", "away": "JOR", "score": "3-1",
+    "mvp": { "name": "Marko Arnautović", "team": "AUT" },
+    "analysis": "Austria impuso su rigor. Schmid abrió, Jordania empató con Olwan, un autogol de Al-Arab y un penal de Arnautović (suplente) sentenciaron.",
+    "homeXI": ["Alexander Schlager", "Stefan Posch", "Philipp Lienhart", "David Alaba", "Phillipp Mwene", "Nicolas Seiwald", "Xaver Schlager", "Konrad Laimer", "Romano Schmid", "Marcel Sabitzer", "Sasa Kalajdzic"],
+    "awayXI": ["Yazeed Abulaila", "Ehsan Haddad", "Abdallah Nasib", "Yazan Al-Arab", "Mohammad Abu Hashish", "Mohannad Abu Taha", "Mousa Tamari", "Nizar Al-Rashdan", "Noor Al-Rawabdeh", "Mahmoud Al-Mardi", "Ali Olwan"],
+    "homeSubs": ["Marko Arnautović"], "awaySubs": [],
+    "goals": [
+      { "scorer": "Romano Schmid", "team": "AUT", "assist": "Xaver Schlager" },
+      { "scorer": "Ali Olwan", "team": "JOR", "assist": null },
+      { "scorer": "Yazan Al-Arab", "team": "JOR", "assist": null, "og": true },
+      { "scorer": "Marko Arnautović", "team": "AUT", "assist": null, "pen": true }
+    ],
+    "yellows": [{ "name": "Marcel Sabitzer", "team": "AUT" }],
+    "reds": []
+  }
+]

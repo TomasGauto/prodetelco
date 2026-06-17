@@ -3,13 +3,14 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import UserAvatar from './UserAvatar';
 import PitchView from './PitchView';
+import { squadPoints } from '../utils/dtPoints';
 
 const noop = () => {};
 
 const asArray = (v) => (Array.isArray(v) ? v : []);
 
 // Muestra los equipos DT del resto de los usuarios (solo lectura).
-const OtherDTs = ({ playersMap, currentUid }) => {
+const OtherDTs = ({ playersMap, currentUid, pointsIndex }) => {
   const [squads, setSquads] = useState([]);
   const [users, setUsers] = useState({});
   const [loading, setLoading] = useState(true);
@@ -40,14 +41,15 @@ const OtherDTs = ({ playersMap, currentUid }) => {
   const others = useMemo(() => {
     return squads
       .filter((s) => s.uid !== currentUid)
+      .map((s) => ({ ...s, dtPts: squadPoints(s, pointsIndex) }))
       .sort((a, b) => {
-        const diff = (b.dtPoints || 0) - (a.dtPoints || 0);
+        const diff = b.dtPts - a.dtPts;
         if (diff !== 0) return diff;
         const an = users[a.uid]?.nickname || '';
         const bn = users[b.uid]?.nickname || '';
         return an.localeCompare(bn);
       });
-  }, [squads, users, currentUid]);
+  }, [squads, users, currentUid, pointsIndex]);
 
   if (loading) {
     return <p className="text-center text-gray-400 text-sm py-16">Cargando equipos...</p>;
@@ -82,7 +84,7 @@ const OtherDTs = ({ playersMap, currentUid }) => {
                 </p>
               </div>
               <div className="text-right shrink-0">
-                <p className="text-lg font-bold text-indigo-600 leading-none">{s.dtPoints || 0}</p>
+                <p className="text-lg font-bold text-indigo-600 leading-none">{s.dtPts}</p>
                 <p className="text-[10px] text-gray-400">pts</p>
               </div>
             </div>

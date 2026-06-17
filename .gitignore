@@ -13,3 +13,4 @@ sa.json
 *.log
 fbref.html
 _fbref_test.html
+_*.json

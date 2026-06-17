@@ -3,6 +3,9 @@ import { collection, onSnapshot, getDocs, getDoc, doc } from 'firebase/firestore
 import { db } from '../firebase';
 import UserAvatar from '../components/UserAvatar';
 import RankingBreakdown from '../components/RankingBreakdown';
+import DtBreakdown from '../components/DtBreakdown';
+import { squadPoints } from '../utils/dtPoints';
+import { useDtPuntajes } from '../hooks/useDtPuntajes';
 
 const medal = (i) => ['🥇', '🥈', '🥉'][i] ?? null;
 
@@ -19,6 +22,10 @@ const Ranking = () => {
 
   const [matchesMap, setMatchesMap] = useState(null);
   const [expandedUid, setExpandedUid] = useState(null);
+  const [dtPlayersMap, setDtPlayersMap] = useState(null);
+  const [dtExpandedUid, setDtExpandedUid] = useState(null);
+
+  const { index: dtIndex } = useDtPuntajes();
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'users'), (snap) => {
@@ -48,25 +55,21 @@ const Ranking = () => {
     const load = async () => {
       setDtLoading(true);
       try {
-        const squadsSnap = await getDocs(collection(db, 'dtSquads'));
+        const [squadsSnap, playersSnap] = await Promise.all([
+          getDocs(collection(db, 'dtSquads')),
+          getDocs(collection(db, 'players')),
+        ]);
         const squads = squadsSnap.docs.map((d) => ({ uid: d.id, ...d.data() }));
 
-        const captainIds = Array.from(
-          new Set(squads.map((s) => s.captainId).filter(Boolean))
-        );
-        const captainSnaps = await Promise.all(
-          captainIds.map((id) => getDoc(doc(db, 'players', id)))
-        );
-        const capMap = {};
-        captainSnaps.forEach((s) => {
-          if (s.exists()) capMap[s.id] = s.data();
-        });
+        const pMap = {};
+        playersSnap.forEach((d) => { pMap[d.id] = d.data(); });
 
         squads.forEach((s) => {
-          const captain = capMap[s.captainId];
+          const captain = pMap[s.captainId];
           s.captainName = captain?.name || '—';
           s.captainCountry = captain?.country || null;
         });
+        setDtPlayersMap(pMap);
         setDtSquads(squads);
         setDtLoaded(true);
       } catch (err) {
@@ -89,14 +92,16 @@ const Ranking = () => {
   }, [users]);
 
   const sortedDt = useMemo(() => {
-    return [...dtSquads].sort((a, b) => {
-      const diff = (b.dtPoints || 0) - (a.dtPoints || 0);
-      if (diff !== 0) return diff;
-      const an = displayName(usersMap[a.uid]);
-      const bn = displayName(usersMap[b.uid]);
-      return an.localeCompare(bn);
-    });
-  }, [dtSquads, usersMap]);
+    return [...dtSquads]
+      .map((s) => ({ ...s, dtPts: squadPoints(s, dtIndex) }))
+      .sort((a, b) => {
+        const diff = b.dtPts - a.dtPts;
+        if (diff !== 0) return diff;
+        const an = displayName(usersMap[a.uid]);
+        const bn = displayName(usersMap[b.uid]);
+        return an.localeCompare(bn);
+      });
+  }, [dtSquads, usersMap, dtIndex]);
 
   if (loading) {
     return (
@@ -231,7 +236,7 @@ const Ranking = () => {
                 Tabla DT
               </h2>
               <p className="text-[11px] text-gray-400">
-                Puntos se acumulan cuando arranque el Mundial
+                Suma de tu XI · capitán x2
               </p>
             </div>
 
@@ -253,33 +258,49 @@ const Ranking = () => {
               <div className="divide-y divide-gray-100">
                 {sortedDt.map((s, i) => {
                   const u = usersMap[s.uid] || {};
+                  const isOpen = dtExpandedUid === s.uid;
                   return (
-                    <div
-                      key={s.uid}
-                      className="flex items-center gap-4 px-5 py-3.5 hover:bg-indigo-50 transition-colors"
-                    >
-                      <div className="w-7 shrink-0 text-center">
-                        {medal(i)
-                          ? <span className="text-lg">{medal(i)}</span>
-                          : <span className="text-sm font-semibold text-gray-400">{i + 1}</span>}
-                      </div>
-                      <UserAvatar
-                        user={{ displayName: u.nickname }}
-                        userData={u}
-                        size="md"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-gray-900 truncate">
-                          {displayName(u)}
-                        </p>
-                        <p className="text-[11px] text-gray-400 truncate">
-                          {s.formation || '—'} · Capitán: {s.captainName}
-                        </p>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <p className="text-lg font-bold text-indigo-600">{s.dtPoints || 0}</p>
-                        <p className="text-xs text-gray-400">pts</p>
-                      </div>
+                    <div key={s.uid}>
+                      <button
+                        type="button"
+                        onClick={() => setDtExpandedUid((cur) => (cur === s.uid ? null : s.uid))}
+                        aria-expanded={isOpen}
+                        className={`w-full flex items-center gap-4 px-5 py-3.5 text-left transition-colors ${
+                          isOpen ? 'bg-indigo-50' : 'hover:bg-indigo-50'
+                        }`}
+                      >
+                        <div className="w-7 shrink-0 text-center">
+                          {medal(i)
+                            ? <span className="text-lg">{medal(i)}</span>
+                            : <span className="text-sm font-semibold text-gray-400">{i + 1}</span>}
+                        </div>
+                        <UserAvatar
+                          user={{ displayName: u.nickname }}
+                          userData={u}
+                          size="md"
+                        />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-900 truncate">
+                            {displayName(u)}
+                          </p>
+                          <p className="text-[11px] text-gray-400 truncate">
+                            {s.formation || '—'} · Capitán: {s.captainName}
+                          </p>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <p className="text-lg font-bold text-indigo-600">{s.dtPts}</p>
+                          <p className="text-xs text-gray-400">pts</p>
+                        </div>
+                        <svg
+                          className={`w-4 h-4 shrink-0 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                          aria-hidden="true"
+                        >
+                          <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                        </svg>
+                      </button>
+                      {isOpen && <DtBreakdown squad={s} playersMap={dtPlayersMap} index={dtIndex} />}
                     </div>
                   );
                 })}
