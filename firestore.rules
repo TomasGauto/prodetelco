@@ -1,0 +1,257 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidCloudinaryUrl(url) {
+      return url is string
+        && url.size() <= 500
+        && url.matches('https://res.cloudinary.com/.*');
+    }
+
+    function isValidCommentContent(data) {
+      return data.text is string
+        && data.text.size() <= 280
+        && !data.text.matches('.*[<>].*')
+        && (!('imageUrl' in data) || isValidCloudinaryUrl(data.imageUrl))
+        && (data.text.size() > 0 || ('imageUrl' in data));
+    }
+
+    function commentSignature(data) {
+      return data.text.size() > 0 ? data.text : data.imageUrl;
+    }
+
+    function chatLimitPath(uid) {
+      return /databases/$(database)/documents/chat_limits/$(uid);
+    }
+
+    function chatLimitBeforeExists(uid) {
+      return exists(chatLimitPath(uid));
+    }
+
+    function chatLimitBefore(uid) {
+      return get(chatLimitPath(uid)).data;
+    }
+
+    function chatLimitAfter(uid) {
+      return getAfter(chatLimitPath(uid)).data;
+    }
+
+    function isValidChatLimitAfter(uid, commentId, text) {
+      return existsAfter(chatLimitPath(uid))
+        && chatLimitAfter(uid).keys().hasOnly([
+          'lastMessageAt',
+          'lastMessageText',
+          'windowStart',
+          'count',
+          'lastCommentId'
+        ])
+        && chatLimitAfter(uid).lastMessageAt == request.time
+        && chatLimitAfter(uid).lastMessageText == text
+        && chatLimitAfter(uid).windowStart is timestamp
+        && chatLimitAfter(uid).count is int
+        && chatLimitAfter(uid).count >= 1
+        && chatLimitAfter(uid).count <= 12
+        && chatLimitAfter(uid).lastCommentId == commentId
+        && (
+          !chatLimitBeforeExists(uid)
+            ? (
+                chatLimitAfter(uid).count == 1
+                && chatLimitAfter(uid).windowStart == request.time
+              )
+            : (
+                chatLimitBefore(uid).lastMessageAt is timestamp
+                && chatLimitBefore(uid).windowStart is timestamp
+                && chatLimitBefore(uid).count is int
+                && chatLimitBefore(uid).lastMessageText is string
+                && (
+                  request.time < chatLimitBefore(uid).windowStart + duration.value(1, 'm')
+                    ? (
+                        chatLimitBefore(uid).count < 12
+                        && chatLimitAfter(uid).windowStart == chatLimitBefore(uid).windowStart
+                        && chatLimitAfter(uid).count == chatLimitBefore(uid).count + 1
+                        && request.time >= chatLimitBefore(uid).lastMessageAt + duration.value(3, 's')
+                        && text != chatLimitBefore(uid).lastMessageText
+                      )
+                    : (
+                        chatLimitAfter(uid).windowStart == request.time
+                        && chatLimitAfter(uid).count == 1
+                        && request.time >= chatLimitBefore(uid).lastMessageAt + duration.value(3, 's')
+                      )
+                )
+              )
+        );
+    }
+
+    match /teams/{teamId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /players/{playerId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /dtSquads/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+                            && request.auth.uid == userId
+                            && request.time < timestamp.value('2026-06-12T06:00:00Z')
+                            && request.resource.data.keys().hasOnly([
+                              'formation', 'gk', 'defenders', 'midfielders',
+                              'forwards', 'captainId', 'updatedAt'
+                            ])
+                            && request.resource.data.formation in ['4-4-2', '4-3-3', '3-5-2']
+                            && request.resource.data.gk is string
+                            && request.resource.data.defenders is list
+                            && request.resource.data.midfielders is list
+                            && request.resource.data.forwards is list
+                            && request.resource.data.captainId is string
+                            && request.resource.data.updatedAt == request.time;
+      allow delete: if false;
+    }
+
+    match /matches/{matchId} {
+      allow read: if isAuthenticated();
+      allow write: if false;
+    }
+
+    match /predictions/{predictionId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated()
+                   && predictionId.matches(request.auth.uid + '_.*');
+    }
+
+    match /comments/{commentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+                    && request.resource.data.keys().hasOnly(['userId', 'text', 'createdAt', 'imageUrl'])
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.createdAt == request.time
+                    && isValidCommentContent(request.resource.data)
+                    && isValidChatLimitAfter(request.auth.uid, commentId, commentSignature(request.resource.data));
+      allow delete: if isAuthenticated()
+                    && resource.data.userId == request.auth.uid;
+    }
+
+    match /chat_reads/{userId} {
+      allow read: if isAuthenticated();
+      allow create, update: if isAuthenticated()
+                            && request.auth.uid == userId
+                            && request.resource.data.keys().hasOnly(['lastReadAt'])
+                            && request.resource.data.lastReadAt == request.time;
+      allow delete: if false;
+    }
+
+    match /chat_limits/{userId} {
+      allow read: if isAuthenticated() && request.auth.uid == userId;
+      allow create, update: if isAuthenticated()
+                            && request.auth.uid == userId
+                            && request.resource.data.keys().hasOnly([
+                              'lastMessageAt',
+                              'lastMessageText',
+                              'windowStart',
+                              'count',
+                              'lastCommentId'
+                            ])
+                            && request.resource.data.lastMessageAt == request.time
+                            && request.resource.data.windowStart is timestamp
+                            && request.resource.data.count is int
+                            && request.resource.data.count >= 1
+                            && request.resource.data.count <= 12
+                            && request.resource.data.lastMessageText is string
+                            && request.resource.data.lastMessageText.size() > 0
+                            && request.resource.data.lastMessageText.size() <= 500
+                            && request.resource.data.lastCommentId is string
+                            && existsAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId))
+                            && getAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId)).data.userId == userId
+                            && (
+                              getAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId)).data.text == request.resource.data.lastMessageText
+                              || (
+                                ('imageUrl' in getAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId)).data)
+                                && getAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId)).data.imageUrl == request.resource.data.lastMessageText
+                              )
+                            )
+                            && getAfter(/databases/$(database)/documents/comments/$(request.resource.data.lastCommentId)).data.createdAt == request.time;
+      allow delete: if false;
+    }
+
+    match /posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated()
+                    && request.resource.data.keys().hasOnly([
+                      'authorId', 'authorNickname', 'authorAvatarEmoji',
+                      'authorAvatarColor', 'text', 'imageUrl',
+                      'createdAt', 'likeCount', 'commentCount'
+                    ])
+                    && request.resource.data.authorId == request.auth.uid
+                    && request.resource.data.createdAt == request.time
+                    && request.resource.data.text is string
+                    && request.resource.data.text.size() >= 0
+                    && request.resource.data.text.size() <= 1000
+                    && (request.resource.data.text.size() > 0
+                        || ('imageUrl' in request.resource.data))
+                    && (!('imageUrl' in request.resource.data)
+                        || (request.resource.data.imageUrl is string
+                            && request.resource.data.imageUrl.size() <= 500
+                            && request.resource.data.imageUrl.matches('https://res.cloudinary.com/.*')))
+                    && request.resource.data.likeCount == 0
+                    && request.resource.data.commentCount == 0;
+      allow update: if isAuthenticated()
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likeCount', 'commentCount'])
+                    && request.resource.data.likeCount is int
+                    && request.resource.data.likeCount >= 0
+                    && request.resource.data.commentCount is int
+                    && request.resource.data.commentCount >= 0;
+      allow delete: if isAuthenticated() && resource.data.authorId == request.auth.uid;
+
+      match /likes/{userId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated()
+                      && userId == request.auth.uid
+                      && request.resource.data.keys().hasOnly(['createdAt'])
+                      && request.resource.data.createdAt == request.time;
+        allow delete: if isAuthenticated() && userId == request.auth.uid;
+      }
+
+      match /comments/{commentId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated()
+                      && request.resource.data.keys().hasOnly([
+                        'authorId', 'authorNickname', 'authorAvatarEmoji',
+                        'authorAvatarColor', 'text', 'createdAt'
+                      ])
+                      && request.resource.data.authorId == request.auth.uid
+                      && request.resource.data.createdAt == request.time
+                      && request.resource.data.text is string
+                      && request.resource.data.text.size() > 0
+                      && request.resource.data.text.size() <= 500;
+        allow delete: if isAuthenticated()
+                      && (resource.data.authorId == request.auth.uid
+                          || get(/databases/$(database)/documents/posts/$(postId)).data.authorId == request.auth.uid);
+      }
+    }
+
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.auth.uid == userId
+        && !('email' in request.resource.data)
+        && !('displayName' in request.resource.data)
+        && !('photoURL' in request.resource.data)
+        && (!('nickname' in request.resource.data)
+            || (request.resource.data.nickname is string
+                && request.resource.data.nickname.size() >= 3
+                && request.resource.data.nickname.size() <= 20
+                && !request.resource.data.nickname.matches('.*[<>].*')))
+        && (!('country' in request.resource.data) || request.resource.data.country == ''
+          || request.resource.data.country.matches('[A-Z]{2}'));
+      allow update: if isAuthenticated() &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.isAdmin == true
+        && request.resource.data.keys().hasOnly(['isAdmin']);
+    }
+  }
+}

@@ -1,0 +1,15 @@
+node_modules/
+dist/
+
+# Secretos — nunca commitear
+fd-token.txt
+prodetelco-firebase-adminsdk-*.json
+sa.json
+.env
+.env.local
+
+# Artefactos locales
+.vite/
+*.log
+fbref.html
+_fbref_test.html

@@ -1,0 +1,40 @@
+name: Actualizar resultados Prode
+
+# Corre en la nube (no depende de ninguna PC).
+# Horarios en UTC. ART = UTC-3, asi que:
+#   00:00 UTC = 21:00 ART
+#   07:00 UTC = 04:00 ART
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 21:00 ART
+    - cron: '0 7 * * *'   # 04:00 ART
+  workflow_dispatch:        # permite correrlo a mano desde la pestaña Actions
+
+# Evita que dos corridas se pisen.
+concurrency:
+  group: resultados
+  cancel-in-progress: false
+
+jobs:
+  resultados:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Escribir credenciales de Firebase
+        run: echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > sa.json
+
+      - name: Actualizar resultados y recalcular ranking
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ./sa.json
+          FOOTBALL_DATA_TOKEN: ${{ secrets.FOOTBALL_DATA_TOKEN }}
+        run: node autoResults.js --once

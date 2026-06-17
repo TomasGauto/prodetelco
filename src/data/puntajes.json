@@ -1,0 +1,71 @@
+[
+  {
+    "match_id": "KOR_CZE_20260611",
+    "home_team": "Corea del Sur",
+    "away_team": "República Checa",
+    "score": "2 - 1",
+    "dt_stats": {
+      "tactical_analysis": "Corea del Sur dominó la posesión en el 1T. República Checa apostó al juego aéreo y pelota parada.",
+      "players_performance": [
+        { "player_id": "kor_kimseunggyu", "name": "Kim Seung-gyu", "team": "KOR", "position": "ARQ", "rating": 5.5, "is_mvp": false, "highlight": "Atajada clave al final, pero recibió 1 gol." },
+        { "player_id": "kor_seolyoungwoo", "name": "Seol Young-woo", "team": "KOR", "position": "DEF", "rating": 4.5, "is_mvp": false, "highlight": "Buen partido, restó por el gol checo." },
+        { "player_id": "kor_kimminjae", "name": "Kim Min-jae", "team": "KOR", "position": "DEF", "rating": 4.5, "is_mvp": false, "highlight": "Sólido por abajo, sufrió en pelota parada." },
+        { "player_id": "kor_jungseunghyun", "name": "Jung Seung-hyun", "team": "KOR", "position": "DEF", "rating": 4.5, "is_mvp": false, "highlight": "Mantuvo la línea." },
+        { "player_id": "kor_kimjinsu", "name": "Kim Jin-su", "team": "KOR", "position": "DEF", "rating": 4.5, "is_mvp": false, "highlight": "Participativo en ataque." },
+        { "player_id": "kor_hwanginbeom", "name": "Hwang In-beom", "team": "KOR", "position": "MED", "rating": 8.5, "is_mvp": true, "highlight": "Marcó el gol del empate y dominó el medio." },
+        { "player_id": "kor_leejaesung", "name": "Lee Jae-sung", "team": "KOR", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Equilibrado." },
+        { "player_id": "kor_leekangin", "name": "Lee Kang-in", "team": "KOR", "position": "MED", "rating": 6.0, "is_mvp": false, "highlight": "Dio 1 asistencia." },
+        { "player_id": "kor_hwangheechan", "name": "Hwang Hee-chan", "team": "KOR", "position": "DEL", "rating": 4.5, "is_mvp": false, "highlight": "Recibió tarjeta amarilla." },
+        { "player_id": "kor_sonheungmin", "name": "Son Heung-min", "team": "KOR", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Peligroso pero sin goles." },
+        { "player_id": "kor_choguesung", "name": "Cho Gue-sung", "team": "KOR", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Luchó arriba." },
+        { "player_id": "kor_ohhyeongyu", "name": "Oh Hyeon-gyu", "team": "KOR", "position": "DEL", "rating": 7.0, "is_mvp": false, "highlight": "Gol de la victoria entrando desde el banco." },
+        
+        { "player_id": "cze_matejkovar", "name": "Matěj Kovář", "team": "CZE", "position": "ARQ", "rating": 6.5, "is_mvp": false, "highlight": "Múltiples atajadas clave, recibió 2 goles." },
+        { "player_id": "cze_vladimircoufal", "name": "Vladimír Coufal", "team": "CZE", "position": "DEF", "rating": 5.0, "is_mvp": false, "highlight": "Asistencia de lateral largo." },
+        { "player_id": "cze_tomasholes", "name": "Tomáš Holeš", "team": "CZE", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Sufrió con los delanteros coreanos." },
+        { "player_id": "cze_robinhranac", "name": "Robin Hranáč", "team": "CZE", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Superado en velocidad." },
+        { "player_id": "cze_ladislavkrejci", "name": "Ladislav Krejčí", "team": "CZE", "position": "DEF", "rating": 7.0, "is_mvp": false, "highlight": "Marcó el único gol checo de cabeza." },
+        { "player_id": "cze_daviddoudera", "name": "David Douděra", "team": "CZE", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Sin peso ofensivo." },
+        { "player_id": "cze_tomassoucek", "name": "Tomáš Souček", "team": "CZE", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Le anularon un gol por offside." },
+        { "player_id": "cze_lukasprovod", "name": "Lukáš Provod", "team": "CZE", "position": "MED", "rating": 4.5, "is_mvp": false, "highlight": "Amonestado." },
+        { "player_id": "cze_antoninbarak", "name": "Antonín Barák", "team": "CZE", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Poca participación." },
+        { "player_id": "cze_adamhlozek", "name": "Adam Hložek", "team": "CZE", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Falló una ocasión clara sobre el final." },
+        { "player_id": "cze_patrikschick", "name": "Patrik Schick", "team": "CZE", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Aislado del juego." }
+      ]
+    }
+  },
+  {
+    "match_id": "MEX_RSA_20260611",
+    "home_team": "México",
+    "away_team": "Sudáfrica",
+    "score": "2 - 0",
+    "dt_stats": {
+      "tactical_analysis": "Victoria en el partido inaugural, marcado por 3 tarjetas rojas y un dominio claro de México.",
+      "players_performance": [
+        { "player_id": "mex_luismalagon", "name": "Luis Malagón", "team": "MEX", "position": "ARQ", "rating": 6.5, "is_mvp": false, "highlight": "Valla invicta." },
+        { "player_id": "mex_jorgesanchez", "name": "Jorge Sánchez", "team": "MEX", "position": "DEF", "rating": 6.5, "is_mvp": false, "highlight": "Valla invicta y firme en marca." },
+        { "player_id": "mex_cesarmontes", "name": "César Montes", "team": "MEX", "position": "DEF", "rating": 4.5, "is_mvp": false, "highlight": "Valla invicta, pero expulsado." },
+        { "player_id": "mex_johanvasquez", "name": "Johan Vásquez", "team": "MEX", "position": "DEF", "rating": 6.5, "is_mvp": false, "highlight": "Valla invicta." },
+        { "player_id": "mex_jesuscgallardo", "name": "Jesús Gallardo", "team": "MEX", "position": "DEF", "rating": 6.5, "is_mvp": false, "highlight": "Valla invicta." },
+        { "player_id": "mex_edsonalvarez", "name": "Edson Álvarez", "team": "MEX", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Dueño del mediocampo." },
+        { "player_id": "mex_luischavez", "name": "Luis Chávez", "team": "MEX", "position": "MED", "rating": 6.0, "is_mvp": false, "highlight": "Asistencia clave." },
+        { "player_id": "mex_orbelinpineda", "name": "Orbelín Pineda", "team": "MEX", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Mucha movilidad." },
+        { "player_id": "mex_urielantuna", "name": "Uriel Antuna", "team": "MEX", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Desborde constante." },
+        { "player_id": "mex_julianquinones", "name": "Julián Quiñones", "team": "MEX", "position": "DEL", "rating": 8.5, "is_mvp": true, "highlight": "Gol tempranero y constante peligro." },
+        { "player_id": "mex_rauljimenez", "name": "Raúl Jiménez", "team": "MEX", "position": "DEL", "rating": 7.0, "is_mvp": false, "highlight": "Anotó el segundo gol." },
+        
+        { "player_id": "rsa_ronwenwilliams", "name": "Ronwen Williams", "team": "RSA", "position": "ARQ", "rating": 4.0, "is_mvp": false, "highlight": "Recibió dos goles." },
+        { "player_id": "rsa_khulisomudau", "name": "Khuliso Mudau", "team": "RSA", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Desbordado por su banda." },
+        { "player_id": "rsa_siyandamxulu", "name": "Siyanda Xulu", "team": "RSA", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Sufrió el juego aéreo." },
+        { "player_id": "rsa_mothobimvala", "name": "Mothobi Mvala", "team": "RSA", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Perdió la marca en los goles." },
+        { "player_id": "rsa_aubreymodiba", "name": "Aubrey Modiba", "team": "RSA", "position": "DEF", "rating": 4.0, "is_mvp": false, "highlight": "Complicado en defensa." },
+        { "player_id": "rsa_tebohomokoena", "name": "Teboho Mokoena", "team": "RSA", "position": "MED", "rating": 5.0, "is_mvp": false, "highlight": "Intentó distribuir." },
+        { "player_id": "rsa_sphephelosithole", "name": "Sphephelo Sithole", "team": "RSA", "position": "MED", "rating": 3.0, "is_mvp": false, "highlight": "Expulsado." },
+        { "player_id": "rsa_thembazwane", "name": "Themba Zwane", "team": "RSA", "position": "MED", "rating": 3.0, "is_mvp": false, "highlight": "Expulsado." },
+        { "player_id": "rsa_percytau", "name": "Percy Tau", "team": "RSA", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Sin opciones claras." },
+        { "player_id": "rsa_lylefoster", "name": "Lyle Foster", "team": "RSA", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Luchó solo arriba." },
+        { "player_id": "rsa_evidencemakgopa", "name": "Evidence Makgopa", "team": "RSA", "position": "DEL", "rating": 5.0, "is_mvp": false, "highlight": "Desaparecido en el segundo tiempo." }
+      ]
+    }
+  }
+]
