@@ -30,6 +30,8 @@ const NAME = {
   CPV: "Cabo Verde", KSA: "Arabia Saudita", URU: "Uruguay", IRN: "Irán",
   NZL: "Nueva Zelanda", FRA: "Francia", SEN: "Senegal", IRQ: "Irak", NOR: "Noruega",
   ARG: "Argentina", ALG: "Argelia", AUT: "Austria", JOR: "Jordania",
+  ENG: "Inglaterra", CRO: "Croacia", GHA: "Ghana", PAN: "Panamá",
+  POR: "Portugal", COD: "Rep. Dem. del Congo", UZB: "Uzbekistán", COL: "Colombia",
 };
 
 const normalize = (s) =>
@@ -58,7 +60,7 @@ const TEAM_FIFA = {};
   ["senegal", "SEN"], ["iraq", "IRQ"], ["norway", "NOR"], ["argentina", "ARG"],
   ["algeria", "ALG"], ["austria", "AUT"], ["jordan", "JOR"], ["england", "ENG"],
   ["croatia", "CRO"], ["ghana", "GHA"], ["panama", "PAN"], ["portugal", "POR"],
-  ["dr congo", "COD"], ["uzbekistan", "UZB"], ["colombia", "COL"],
+  ["dr congo", "COD"], ["congo dr", "COD"], ["uzbekistan", "UZB"], ["colombia", "COL"],
 ].forEach(([n, f]) => { TEAM_FIFA[n] = f; });
 
 const ALIAS = {
@@ -70,6 +72,8 @@ const ALIAS = {
   "marquinhos": "Marcos Corrêa", "alisson": "Alisson Becker", "bono": "Yassine Bounou",
   "rodri": "Rodrigo Hernández", "pedri": "Pedro López", "gavi": "Pablo Gavira",
   "nico gonzalez": "Nicolás González",
+  "jose luis rodriguez": "José Rodríguez",
+  "vitinha": "Vítor Ferreira",
 };
 
 // ── ESPN fetch ───────────────────────────────────────────────────────
@@ -263,60 +267,104 @@ const scoreMatch = (mt, byCountry) => {
     e.highlight = buildHighlight(e.stats_summary, e.is_mvp, e._isGK, e._isDEF, e._conceded, e._ctx);
     delete e._isGK; delete e._isDEF; delete e._conceded; delete e._ctx;
   });
-  perf.sort((a, b) => b.rating - a.rating);
+  // Local primero, visitante despues; dentro de cada equipo por rating desc.
+  // La vista DT usa el primer equipo que aparece en la lista como "local".
+  const teamOrder = { [mt.home]: 0, [mt.away]: 1 };
+  perf.sort((a, b) => (teamOrder[a.team] - teamOrder[b.team]) || (b.rating - a.rating));
   return perf;
 };
 
+// Analisis tactico breve para los partidos auto (los curados ya traen el suyo).
+const buildAnalysis = (mt, perf) => {
+  const homeName = NAME[mt.home] || mt.home;
+  const awayName = NAME[mt.away] || mt.away;
+  let res;
+  if (mt.hg > mt.ag) res = `${homeName} venció ${mt.hg}-${mt.ag} a ${awayName}`;
+  else if (mt.hg < mt.ag) res = `${awayName} se impuso ${mt.ag}-${mt.hg} ante ${homeName}`;
+  else res = `${homeName} y ${awayName} igualaron ${mt.hg}-${mt.ag}`;
+  const fig = perf.find((p) => p.is_mvp);
+  const figTxt = fig ? ` La figura fue ${fig.name} (${fig.rating.toFixed(1)}).` : "";
+  return `${res}.${figTxt}`;
+};
+
 // ── Main ─────────────────────────────────────────────────────────────
+const PUNTAJES_FILE = "src/data/puntajes.json";
+const PLAYERS_FILE = "src/data/players.json";
+// Clave por par de equipos (sin importar orientacion local/visitante).
+const pairKey = (codes) => [...new Set(codes)].sort().join("_");
+
+const loadCurated = () => {
+  if (!existsSync(PUNTAJES_FILE)) return [];
+  const j = JSON.parse(readFileSync(PUNTAJES_FILE, "utf8"));
+  return Array.isArray(j) ? j : (j.matches || []);
+};
+
 const run = async () => {
   console.log(`\nDT auto (ESPN)${DRY_RUN ? " DRY-RUN" : ""}${NO_DB ? " NO-DB" : ""}...`);
-  let db = null;
+
+  // Planteles desde el bundle estatico (0 lecturas de Firestore).
   const byCountry = {};
-  if (!NO_DB) {
-    db = initAdmin();
-    const snap = await db.collection("players").get();
-    snap.forEach((d) => {
-      const pl = d.data(); const c = pl.country;
-      if (!byCountry[c]) byCountry[c] = { byNorm: new Map(), byLast: new Map() };
-      const obj = { id: d.id, name: pl.name, position: pl.position };
-      const n = normalize(pl.name);
-      byCountry[c].byNorm.set(n, obj);
-      const lt = lastTok(n);
-      if (!byCountry[c].byLast.has(lt)) byCountry[c].byLast.set(lt, []);
-      byCountry[c].byLast.get(lt).push(obj);
-    });
-  }
+  const players = JSON.parse(readFileSync(PLAYERS_FILE, "utf8"));
+  players.forEach((pl) => {
+    const c = pl.country;
+    if (!byCountry[c]) byCountry[c] = { byNorm: new Map(), byLast: new Map() };
+    const obj = { id: pl.id, name: pl.name, position: pl.position };
+    const n = normalize(pl.name);
+    byCountry[c].byNorm.set(n, obj);
+    const lt = lastTok(n);
+    if (!byCountry[c].byLast.has(lt)) byCountry[c].byLast.set(lt, []);
+    byCountry[c].byLast.get(lt).push(obj);
+  });
+
+  // Base ya cargada: estos partidos NO se regeneran (conservan analisis y ratings).
+  const curated = loadCurated();
+  const curatedKeys = new Set(
+    curated.map((m) => pairKey((m.dt_stats?.players_performance || []).map((p) => p.team)))
+  );
+  console.log(`Partidos ya cargados: ${curated.length}`);
 
   const ids = await getFinishedEvents();
   console.log(`Partidos terminados en ESPN: ${ids.length}`);
 
-  const out = [];
+  const fresh = [];
   for (const id of ids) {
     try {
       const s = await getJson(`${ESPN}/summary?event=${id}`);
       const mt = parseMatch(s);
       if (!mt || !mt.home || !mt.away || mt.hg == null || mt.ag == null) continue;
+      if (curatedKeys.has(pairKey([mt.home, mt.away]))) continue; // ya existe, no pisar
       const perf = scoreMatch(mt, byCountry);
       if (!perf.length) continue;
-      out.push({
+      fresh.push({
         match_id: `${mt.home}_${mt.away}`,
         home_team: NAME[mt.home] || mt.home, away_team: NAME[mt.away] || mt.away,
         score: `${mt.hg} - ${mt.ag}`,
-        dt_stats: { tactical_analysis: "", players_performance: perf },
+        dt_stats: { tactical_analysis: buildAnalysis(mt, perf), players_performance: perf },
       });
     } catch (e) { console.log(`  (skip ${id}: ${e.message})`); }
   }
 
-  console.log(`Generados: ${out.length} partidos, ${out.reduce((a, x) => a + x.dt_stats.players_performance.length, 0)} jugadores.`);
+  const out = [...curated, ...fresh];
+  console.log(`Nuevos: ${fresh.length} | total: ${out.length} partidos.`);
+  if (fresh.length) console.log("  + " + fresh.map((m) => `${m.home_team} ${m.score} ${m.away_team}`).join(" | "));
   if (unmatched.length) console.log(`Sin match (${[...new Set(unmatched)].length}): ${[...new Set(unmatched)].slice(0, 30).join(", ")}`);
 
   if (DRY_RUN || NO_DB) {
-    writeFileSync("_dtauto_preview.json", JSON.stringify(out, null, 2), "utf8");
-    console.log("DRY-RUN: escrito _dtauto_preview.json (no toca Firestore).");
+    writeFileSync("_dtauto_preview.json", JSON.stringify(fresh, null, 2), "utf8");
+    console.log("DRY-RUN: escrito _dtauto_preview.json (solo los nuevos; no toca Firestore ni el bundle).");
     return;
   }
+
+  if (!fresh.length) {
+    console.log("No hay partidos nuevos para agregar. Nada que escribir.");
+    return;
+  }
+
+  // Actualiza el bundle (fallback) y Firestore (fuente en vivo).
+  writeFileSync(PUNTAJES_FILE, JSON.stringify(out) + "\n", "utf8");
+  const db = initAdmin();
   await db.collection("dt").doc("puntajes").set({ matches: out, updatedAt: new Date() });
-  console.log("Escrito en Firestore: dt/puntajes.");
+  console.log(`Escrito: ${PUNTAJES_FILE} (${out.length}) y Firestore dt/puntajes.`);
 };
 
 run().then(() => process.exit(0)).catch((e) => { console.error("Error:", e); process.exit(1); });
