@@ -35,3 +35,11 @@ export const squadPoints = (squad, index) => {
 
 // Puntos de un solo jugador (para desgloses).
 export const playerPoints = (playerId, index) => (index ? index.get(playerId) || 0 : 0);
+
+// Total del DT = puntos congelados de fechas ya cerradas (bankedPoints) +
+// puntos en vivo del equipo ACTUAL, contando solo los partidos no congelados
+// (liveIndex). Así reabrir la edición no recalcula las fechas ya guardadas.
+export const dtTotal = (squad, liveIndex) => {
+  const banked = squad?.bankedPoints || 0;
+  return Math.round((banked + squadPoints(squad, liveIndex)) * 10) / 10;
+};

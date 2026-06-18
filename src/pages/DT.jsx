@@ -8,8 +8,9 @@ import PitchView from '../components/PitchView';
 import PlayerSearch from '../components/PlayerSearch';
 import OtherDTs from '../components/OtherDTs';
 
-// Cierre para armar/editar el DT. Extendido 24hs (originalmente 2026-06-11T06:00Z).
-const KICKOFF = new Date('2026-06-12T00:00:00-06:00');
+// Reapertura de 24hs para cambios en el DT. La fecha 1 ya quedó congelada
+// (bankedPoints por usuario), así que editar el equipo solo afecta de acá en más.
+const KICKOFF = new Date('2026-06-19T16:00:00Z');
 
 const FORMATIONS = {
   '4-4-2': { gk: 1, def: 4, mid: 4, fwd: 2 },
@@ -47,7 +48,7 @@ const fitFormation = (squad, fromFormation, toFormation) => {
 
 const DT = () => {
   const { currentUser } = useAuth();
-  const { matches: puntajesData, index: dtIndex } = useDtPuntajes();
+  const { matches: puntajesData, liveIndex: dtLiveIndex } = useDtPuntajes();
   // Planteles estáticos (bundle): evita leer 1247 docs de Firestore por visita.
   const players = playersData;
   const [loading, setLoading] = useState(true);
@@ -211,7 +212,7 @@ const DT = () => {
           captainId,
           updatedAt: serverTimestamp(),
         },
-        { merge: false }
+        { merge: true } // preserva bankedPoints (puntos congelados de fechas cerradas)
       );
       setSavedAt(Date.now());
     } catch (err) {
@@ -397,9 +398,15 @@ const DT = () => {
             })()}
           </div>
         ) : view === 'others' ? (
-          <OtherDTs playersMap={playersMap} currentUid={currentUser.uid} pointsIndex={dtIndex} />
+          <OtherDTs playersMap={playersMap} currentUid={currentUser.uid} pointsIndex={dtLiveIndex} />
         ) : (
         <>
+        {!locked && (
+          <div className="bg-indigo-50 border border-indigo-100 text-indigo-800 text-sm rounded-xl px-4 py-3 mb-4">
+            🔓 Reabrimos el DT por 24hs. <strong>Los puntos de la fecha 1 ya quedaron guardados</strong> y no
+            cambian: los retoques que hagas ahora cuentan de la próxima fecha en adelante.
+          </div>
+        )}
         {/* Status bar */}
         <div className="bg-white rounded-2xl border border-gray-200 px-4 py-3 mb-4 flex items-center justify-between flex-wrap gap-3">
           <div className="flex items-center gap-4 flex-wrap">

@@ -3,7 +3,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import UserAvatar from './UserAvatar';
 import PitchView from './PitchView';
-import { squadPoints } from '../utils/dtPoints';
+import { dtTotal } from '../utils/dtPoints';
 
 const noop = () => {};
 
@@ -41,7 +41,7 @@ const OtherDTs = ({ playersMap, currentUid, pointsIndex }) => {
   const others = useMemo(() => {
     return squads
       .filter((s) => s.uid !== currentUid)
-      .map((s) => ({ ...s, dtPts: squadPoints(s, pointsIndex) }))
+      .map((s) => ({ ...s, dtPts: dtTotal(s, pointsIndex) }))
       .sort((a, b) => {
         const diff = b.dtPts - a.dtPts;
         if (diff !== 0) return diff;

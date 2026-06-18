@@ -1,5 +1,5 @@
 import { getFlag } from '../utils/flags';
-import { playerPoints, squadPoints } from '../utils/dtPoints';
+import { playerPoints, dtTotal } from '../utils/dtPoints';
 
 const fifaOf = (id) => (id || '').split('_')[0];
 const r1 = (n) => Math.round(n * 10) / 10;
@@ -25,9 +25,11 @@ const Row = ({ id, playersMap, isCaptain, index }) => {
 };
 
 /**
- * Desglose del equipo DT: cuánto aporta cada jugador del XI (capitán x2).
+ * Desglose del equipo DT. Muestra los puntos congelados de fechas ya cerradas
+ * (banked) y, debajo, el aporte EN VIVO de cada jugador del XI actual (liveIndex,
+ * capitán x2) por los partidos todavía no congelados.
  */
-const DtBreakdown = ({ squad, playersMap, index }) => {
+const DtBreakdown = ({ squad, playersMap, liveIndex, banked = 0 }) => {
   if (!playersMap) {
     return <p className="px-5 py-4 text-sm text-gray-400">Cargando desglose...</p>;
   }
@@ -37,18 +39,27 @@ const DtBreakdown = ({ squad, playersMap, index }) => {
     ...(squad.midfielders || []),
     ...(squad.forwards || []),
   ].filter(Boolean);
-  const scored = ids.filter((id) => playerPoints(id, index) > 0).length;
+  const scored = ids.filter((id) => playerPoints(id, liveIndex) > 0).length;
+  const hasBanked = banked > 0;
 
   return (
     <div className="bg-gray-50 border-t border-gray-100 px-3 sm:px-4 py-3 space-y-1.5">
+      {hasBanked && (
+        <div className="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-lg px-2.5 py-1.5">
+          <span className="text-[11px] font-semibold text-indigo-700">
+            Fechas cerradas (congelado) 🔒
+          </span>
+          <span className="text-xs font-bold text-indigo-700 tabular-nums">{r1(banked)} pts</span>
+        </div>
+      )}
       <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide px-1">
-        Desglose · {scored}/{ids.length} sumaron
+        {hasBanked ? 'En juego' : 'Desglose'} · {scored}/{ids.length} sumaron
       </p>
       {ids.map((id) => (
-        <Row key={id} id={id} playersMap={playersMap} isCaptain={id === squad.captainId} index={index} />
+        <Row key={id} id={id} playersMap={playersMap} isCaptain={id === squad.captainId} index={liveIndex} />
       ))}
       <div className="flex justify-end pt-1 px-1">
-        <span className="text-xs font-semibold text-gray-600">Total: {squadPoints(squad, index)} pts</span>
+        <span className="text-xs font-semibold text-gray-600">Total: {dtTotal(squad, liveIndex)} pts</span>
       </div>
     </div>
   );

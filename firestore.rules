@@ -98,20 +98,37 @@ service cloud.firestore {
 
     match /dtSquads/{userId} {
       allow read: if isAuthenticated();
-      allow create, update: if isAuthenticated()
-                            && request.auth.uid == userId
-                            && request.time < timestamp.value('2026-06-12T06:00:00Z')
-                            && request.resource.data.keys().hasOnly([
-                              'formation', 'gk', 'defenders', 'midfielders',
-                              'forwards', 'captainId', 'updatedAt'
-                            ])
-                            && request.resource.data.formation in ['4-4-2', '4-3-3', '3-5-2']
-                            && request.resource.data.gk is string
-                            && request.resource.data.defenders is list
-                            && request.resource.data.midfielders is list
-                            && request.resource.data.forwards is list
-                            && request.resource.data.captainId is string
-                            && request.resource.data.updatedAt == request.time;
+      // Ventana de edicion reabierta 24hs (la fecha 1 ya quedo congelada).
+      allow create: if isAuthenticated()
+                    && request.auth.uid == userId
+                    && request.time < timestamp.value('2026-06-19T16:00:00Z')
+                    && request.resource.data.keys().hasOnly([
+                      'formation', 'gk', 'defenders', 'midfielders',
+                      'forwards', 'captainId', 'updatedAt'
+                    ])
+                    && request.resource.data.formation in ['4-4-2', '4-3-3', '3-5-2']
+                    && request.resource.data.gk is string
+                    && request.resource.data.defenders is list
+                    && request.resource.data.midfielders is list
+                    && request.resource.data.forwards is list
+                    && request.resource.data.captainId is string
+                    && request.resource.data.updatedAt == request.time;
+      // En update solo pueden cambiar los campos del equipo; bankedPoints (los
+      // puntos congelados, escritos por el admin) queda intacto.
+      allow update: if isAuthenticated()
+                    && request.auth.uid == userId
+                    && request.time < timestamp.value('2026-06-19T16:00:00Z')
+                    && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+                      'formation', 'gk', 'defenders', 'midfielders',
+                      'forwards', 'captainId', 'updatedAt'
+                    ])
+                    && request.resource.data.formation in ['4-4-2', '4-3-3', '3-5-2']
+                    && request.resource.data.gk is string
+                    && request.resource.data.defenders is list
+                    && request.resource.data.midfielders is list
+                    && request.resource.data.forwards is list
+                    && request.resource.data.captainId is string
+                    && request.resource.data.updatedAt == request.time;
       allow delete: if false;
     }
 

@@ -4,7 +4,7 @@ import { db } from '../firebase';
 import UserAvatar from '../components/UserAvatar';
 import RankingBreakdown from '../components/RankingBreakdown';
 import DtBreakdown from '../components/DtBreakdown';
-import { squadPoints } from '../utils/dtPoints';
+import { dtTotal } from '../utils/dtPoints';
 import { useDtPuntajes } from '../hooks/useDtPuntajes';
 import playersData from '../data/players.json';
 
@@ -26,7 +26,7 @@ const Ranking = () => {
   const [dtPlayersMap, setDtPlayersMap] = useState(null);
   const [dtExpandedUid, setDtExpandedUid] = useState(null);
 
-  const { index: dtIndex } = useDtPuntajes();
+  const { liveIndex: dtLiveIndex } = useDtPuntajes();
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, 'users'), (snap) => {
@@ -92,7 +92,7 @@ const Ranking = () => {
 
   const sortedDt = useMemo(() => {
     return [...dtSquads]
-      .map((s) => ({ ...s, dtPts: squadPoints(s, dtIndex) }))
+      .map((s) => ({ ...s, dtPts: dtTotal(s, dtLiveIndex) }))
       .sort((a, b) => {
         const diff = b.dtPts - a.dtPts;
         if (diff !== 0) return diff;
@@ -100,7 +100,7 @@ const Ranking = () => {
         const bn = displayName(usersMap[b.uid]);
         return an.localeCompare(bn);
       });
-  }, [dtSquads, usersMap, dtIndex]);
+  }, [dtSquads, usersMap, dtLiveIndex]);
 
   if (loading) {
     return (
@@ -299,7 +299,7 @@ const Ranking = () => {
                           <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                         </svg>
                       </button>
-                      {isOpen && <DtBreakdown squad={s} playersMap={dtPlayersMap} index={dtIndex} />}
+                      {isOpen && <DtBreakdown squad={s} playersMap={dtPlayersMap} liveIndex={dtLiveIndex} banked={s.bankedPoints || 0} />}
                     </div>
                   );
                 })}
