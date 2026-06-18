@@ -6,6 +6,7 @@ import RankingBreakdown from '../components/RankingBreakdown';
 import DtBreakdown from '../components/DtBreakdown';
 import { squadPoints } from '../utils/dtPoints';
 import { useDtPuntajes } from '../hooks/useDtPuntajes';
+import playersData from '../data/players.json';
 
 const medal = (i) => ['🥇', '🥈', '🥉'][i] ?? null;
 
@@ -55,14 +56,12 @@ const Ranking = () => {
     const load = async () => {
       setDtLoading(true);
       try {
-        const [squadsSnap, playersSnap] = await Promise.all([
-          getDocs(collection(db, 'dtSquads')),
-          getDocs(collection(db, 'players')),
-        ]);
+        // Planteles estáticos desde el bundle (0 lecturas); solo leemos dtSquads.
+        const squadsSnap = await getDocs(collection(db, 'dtSquads'));
         const squads = squadsSnap.docs.map((d) => ({ uid: d.id, ...d.data() }));
 
         const pMap = {};
-        playersSnap.forEach((d) => { pMap[d.id] = d.data(); });
+        playersData.forEach((p) => { pMap[p.id] = p; });
 
         squads.forEach((s) => {
           const captain = pMap[s.captainId];

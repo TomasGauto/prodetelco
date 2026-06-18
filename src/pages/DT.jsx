@@ -1,9 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useDtPuntajes } from '../hooks/useDtPuntajes';
-import {
-  collection, getDocs, doc, getDoc, setDoc, serverTimestamp,
-} from 'firebase/firestore';
+import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import playersData from '../data/players.json';
 import { useAuth } from '../contexts/AuthContext';
 import PitchView from '../components/PitchView';
 import PlayerSearch from '../components/PlayerSearch';
@@ -49,7 +48,8 @@ const fitFormation = (squad, fromFormation, toFormation) => {
 const DT = () => {
   const { currentUser } = useAuth();
   const { matches: puntajesData, index: dtIndex } = useDtPuntajes();
-  const [players, setPlayers] = useState([]);
+  // Planteles estáticos (bundle): evita leer 1247 docs de Firestore por visita.
+  const players = playersData;
   const [loading, setLoading] = useState(true);
 
   const [formation, setFormation] = useState('4-4-2');
@@ -75,13 +75,7 @@ const DT = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const [playersSnap, squadSnap] = await Promise.all([
-          getDocs(collection(db, 'players')),
-          getDoc(doc(db, 'dtSquads', currentUser.uid)),
-        ]);
-
-        const list = playersSnap.docs.map((d) => ({ id: d.id, ...d.data() }));
-        setPlayers(list);
+        const squadSnap = await getDoc(doc(db, 'dtSquads', currentUser.uid));
 
         if (squadSnap.exists()) {
           const data = squadSnap.data();
