@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import bundled from '../data/puntajes.json';
-import { buildPointsIndex } from '../utils/dtPoints';
+import { buildPointsIndex, buildDetailIndex } from '../utils/dtPoints';
 
 /**
  * Puntajes del DT. Prefiere el doc dt/puntajes de Firestore (que actualiza el
@@ -45,13 +45,15 @@ export const useDtPuntajes = () => {
 
   const index = useMemo(() => buildPointsIndex(matches), [matches]);
 
-  // Índice en vivo: solo partidos NO congelados. Si no hay nada congelado,
-  // es igual al índice completo.
-  const liveIndex = useMemo(() => {
-    if (!lockedMatchIds.length) return index;
+  // Partidos en vivo: solo los NO congelados. Si no hay nada congelado, son todos.
+  const liveMatches = useMemo(() => {
+    if (!lockedMatchIds.length) return matches || [];
     const locked = new Set(lockedMatchIds);
-    return buildPointsIndex((matches || []).filter((m) => !locked.has(m.match_id)));
-  }, [matches, lockedMatchIds, index]);
+    return (matches || []).filter((m) => !locked.has(m.match_id));
+  }, [matches, lockedMatchIds]);
 
-  return { matches, index, liveIndex, lockedMatchIds };
+  const liveIndex = useMemo(() => buildPointsIndex(liveMatches), [liveMatches]);
+  const liveDetail = useMemo(() => buildDetailIndex(liveMatches), [liveMatches]);
+
+  return { matches, index, liveIndex, liveDetail, lockedMatchIds };
 };

@@ -74,6 +74,7 @@ const ALIAS = {
   "nico gonzalez": "Nicolás González",
   "jose luis rodriguez": "José Rodríguez",
   "vitinha": "Vítor Ferreira",
+  "endrick": "Endrick Sousa",
 };
 
 // ── ESPN fetch ───────────────────────────────────────────────────────
@@ -222,7 +223,7 @@ const scoreMatch = (mt, byCountry) => {
   const concededOf = { [mt.home]: mt.ag, [mt.away]: mt.hg };
   const scoreOf = { [mt.home]: mt.hg, [mt.away]: mt.ag };
   const perf = [];
-  let figura = null;
+  let figura = null, figuraScore = -Infinity;
 
   for (const team of [mt.home, mt.away]) {
     const conceded = concededOf[team];
@@ -241,9 +242,9 @@ const scoreMatch = (mt, byCountry) => {
       const st = { goals, assists, yellow_cards: yellow, red_cards: red, own_goals: own };
 
       let r = 5.0 + ctx;
-      r += goals * (isGKDEF ? 2.6 : 1.6);
-      r += assists * 0.9;
-      if (isGKDEF && conceded === 0 && !red) r += 1.3;
+      r += goals * (isGKDEF ? 2.1 : 1.7);
+      r += assists * 0.8;
+      if (isGKDEF && conceded === 0 && !red) r += 1.0;
       if (isGKDEF) r += Math.max(-2.0, conceded * -0.5);
       r += yellow * -0.5; r += red * -2.5; r += own * -2.5;
       const rating = clamp(r);
@@ -254,14 +255,17 @@ const scoreMatch = (mt, byCountry) => {
         rating, is_mvp: false, stats_summary: st, _isGK: isGK, _isDEF: isDEF, _conceded: conceded, _ctx: ctx,
       };
       perf.push(entry);
-      if (!figura || rating > figura.rating) figura = entry;
+      // Para elegir figura, penalizo a ARQ/DEF: deben superar por 0.5 a un
+      // atacante para ser MVP (evita que un defensor que metió 1 gol sea figura).
+      const figScore = rating - (isGKDEF ? 0.5 : 0);
+      if (figScore > figuraScore) { figuraScore = figScore; figura = entry; }
     }
   }
 
-  // figura = mejor rating, con piso 7.0 y bonus
+  // figura = mejor rating ajustado, con piso 7.0 y un bonus chico
   if (figura) {
     figura.is_mvp = true;
-    figura.rating = Math.max(7.0, clamp(figura.rating + 0.8));
+    figura.rating = Math.max(7.0, clamp(figura.rating + 0.3));
   }
   perf.forEach((e) => {
     e.highlight = buildHighlight(e.stats_summary, e.is_mvp, e._isGK, e._isDEF, e._conceded, e._ctx);

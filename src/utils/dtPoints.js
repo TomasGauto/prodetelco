@@ -36,6 +36,20 @@ export const squadPoints = (squad, index) => {
 // Puntos de un solo jugador (para desgloses).
 export const playerPoints = (playerId, index) => (index ? index.get(playerId) || 0 : 0);
 
+// Detalle por jugador: lista de ratings partido por partido (para mostrar que el
+// total es acumulado, ej. 6.6 + 8.6, y no un puntaje suelto de "15").
+export const buildDetailIndex = (matches) => {
+  const idx = new Map();
+  (matches || []).forEach((match) => {
+    (match?.dt_stats?.players_performance || []).forEach((p) => {
+      if (!p.player_id || typeof p.rating !== 'number') return;
+      if (!idx.has(p.player_id)) idx.set(p.player_id, []);
+      idx.get(p.player_id).push(p.rating);
+    });
+  });
+  return idx;
+};
+
 // Total del DT = puntos congelados de fechas ya cerradas (bankedPoints) +
 // puntos en vivo del equipo ACTUAL, contando solo los partidos no congelados
 // (liveIndex). Así reabrir la edición no recalcula las fechas ya guardadas.
