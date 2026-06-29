@@ -149,7 +149,13 @@ const fetchFinishedMatches = async (token) => {
   return Array.isArray(data.matches) ? data.matches : [];
 };
 
-// ── Indice de NUESTROS partidos: "HOME>AWAY" (FIFA) -> doc ────────────
+// Un partido es de eliminatorias si su round no es numerico (ej. "R32", "R16").
+// Los de grupos tienen round 1/2/3.
+const isKnockoutMatch = (m) => !!(m.round && Number.isNaN(Number(m.round)));
+
+// ── Indice de NUESTROS partidos: "HOME>AWAY" (FIFA) -> [docs] ─────────
+// Guarda un array por cruce: dos equipos podrian enfrentarse en grupos Y en
+// el mano a mano, asi que no alcanza con una sola entrada por par.
 const buildOurIndex = (matchesSnap) => {
   const index = new Map();
   matchesSnap.forEach((d) => {
@@ -157,15 +163,28 @@ const buildOurIndex = (matchesSnap) => {
     const homeFifa = (m.homeTeamId || "").split("_")[0];
     const awayFifa = (m.awayTeamId || "").split("_")[0];
     if (!homeFifa || !awayFifa) return;
-    index.set(`${homeFifa}>${awayFifa}`, {
+    const key = `${homeFifa}>${awayFifa}`;
+    if (!index.has(key)) index.set(key, []);
+    index.get(key).push({
       id: d.id,
       homeTeam: m.homeTeam,
       awayTeam: m.awayTeam,
       homeScore: m.homeScore,
       awayScore: m.awayScore,
+      ko: isKnockoutMatch(m),
     });
   });
   return index;
+};
+
+// Elige el partido nuestro que corresponde a un resultado de la API: prioriza
+// los del mismo tipo (grupo/knockout) y, entre esos, el que todavia no tiene
+// resultado cargado. Asi un cruce repetido no se pisa.
+const pickOur = (list, wantKO) => {
+  if (!list || !list.length) return null;
+  const sameStage = list.filter((x) => x.ko === wantKO);
+  const pool = sameStage.length ? sameStage : list;
+  return pool.find((x) => !isNum(x.homeScore) || !isNum(x.awayScore)) || pool[0];
 };
 
 // ── Calcula que partidos hay que actualizar ──────────────────────────
@@ -174,9 +193,9 @@ const computeUpdates = (apiMatches, index) => {
   const unresolved = [];
 
   for (const am of apiMatches) {
-    if (am.stage && am.stage !== "GROUP_STAGE") continue; // solo fase de grupos
     const ft = am.score?.fullTime || {};
     if (!isNum(ft.home) || !isNum(ft.away)) continue;
+    const wantKO = !!(am.stage && am.stage !== "GROUP_STAGE"); // grupos o eliminatorias
 
     const hf = fifaOf(am.homeTeam);
     const af = fifaOf(am.awayTeam);
@@ -186,11 +205,11 @@ const computeUpdates = (apiMatches, index) => {
     }
 
     // Orientacion directa; si no, invertida (y se intercambian los goles).
-    let our = index.get(`${hf}>${af}`);
+    let our = pickOur(index.get(`${hf}>${af}`), wantKO);
     let home = ft.home;
     let away = ft.away;
     if (!our) {
-      our = index.get(`${af}>${hf}`);
+      our = pickOur(index.get(`${af}>${hf}`), wantKO);
       home = ft.away;
       away = ft.home;
     }

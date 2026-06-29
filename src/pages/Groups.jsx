@@ -24,9 +24,11 @@ const Groups = () => {
         const next = { ...prev };
         snap.forEach((d) => {
           const m = { id: d.id, ...d.data() };
-          if (!next[m.group]) next[m.group] = { matches: [], teams: [] };
-          if (!next[m.group].matches.find(x => x.id === m.id)) {
-            next[m.group].matches.push(m);
+          // Los partidos de eliminatorias no tienen group: van a un bucket aparte.
+          const gkey = m.group || 'KO';
+          if (!next[gkey]) next[gkey] = { matches: [], teams: [] };
+          if (!next[gkey].matches.find(x => x.id === m.id)) {
+            next[gkey].matches.push(m);
           }
         });
         return next;
@@ -53,6 +55,9 @@ const Groups = () => {
   }, []);
 
   const sortedGroups = Object.keys(groupsData).sort();
+  // Grupos reales (A-L) vs partidos de eliminatorias (bucket 'KO').
+  const realGroups = sortedGroups.filter((g) => /^[A-L]$/.test(g));
+  const koMatches = groupsData.KO?.matches || [];
 
   // Todos los partidos en una sola lista (memoizado para no recargar predicciones
   // en cada render). GroupsFixture los ordena por fecha internamente.
@@ -187,26 +192,42 @@ const Groups = () => {
               />
             </div>
           ) : (
-            <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
-              {sortedGroups.map((group) => (
-                <div key={group} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                  <div className="px-4 py-3 bg-indigo-600">
-                    <h2 className="text-base font-bold text-white">Grupo {group}</h2>
+            <>
+              <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {realGroups.map((group) => (
+                  <div key={group} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="px-4 py-3 bg-indigo-600">
+                      <h2 className="text-base font-bold text-white">Grupo {group}</h2>
+                    </div>
+                    <div className="p-4">
+                      <GroupStandings
+                        teams={groupsData[group].teams || []}
+                        matches={groupsData[group].matches || []}
+                      />
+                      <GroupsFixture
+                        group={group}
+                        matches={groupsData[group].matches || []}
+                        onMatchClick={setSelectedMatch}
+                      />
+                    </div>
                   </div>
-                  <div className="p-4">
-                    <GroupStandings
-                      teams={groupsData[group].teams || []}
-                      matches={groupsData[group].matches || []}
-                    />
+                ))}
+              </div>
+
+              {koMatches.length > 0 && (
+                <div className="mt-8 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                  <div className="px-4 py-3 bg-gray-900">
+                    <h2 className="text-base font-bold text-white">Eliminatorias</h2>
+                  </div>
+                  <div className="p-4 max-w-2xl">
                     <GroupsFixture
-                      group={group}
-                      matches={groupsData[group].matches || []}
+                      matches={koMatches}
                       onMatchClick={setSelectedMatch}
                     />
                   </div>
                 </div>
-              ))}
-            </div>
+              )}
+            </>
           )}
         </div>
       </div>

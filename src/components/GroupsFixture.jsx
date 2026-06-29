@@ -13,6 +13,11 @@ const fmtDate = (ts) => {
 // Las apuestas se cierran 1 hora antes del inicio de cada partido.
 const LOCK_MS = 60 * 60 * 1000;
 
+// Etiquetas de las rondas de eliminatorias (round no numerico, ej. "R32").
+const KO_LABELS = { R32: '32avos', R16: 'Octavos', QF: 'Cuartos', SF: 'Semis', '3P': '3er puesto', F: 'Final' };
+const isKO = (round) => round != null && Number.isNaN(Number(round));
+const roundLabel = (m) => (isKO(m.round) ? (KO_LABELS[m.round] || m.round) : `J${m.round}`);
+
 // Devuelve el kickoff en ms, soportando Timestamp de Firestore o Date.
 const getKickoffMs = (date) => {
   if (!date) return null;
@@ -108,7 +113,7 @@ const GroupsFixture = ({ group, matches, onMatchClick, showGroupBadge = false })
 
   const sorted = [...matches].sort((a, b) => {
     const ta = a.date?.seconds || 0, tb = b.date?.seconds || 0;
-    return ta - tb || a.round - b.round;
+    return ta - tb || (Number(a.round) || 0) - (Number(b.round) || 0);
   });
 
   return (
@@ -130,12 +135,12 @@ const GroupsFixture = ({ group, matches, onMatchClick, showGroupBadge = false })
             <div className="flex justify-between items-start mb-2">
               <div>
                 <p className="text-xs font-medium text-gray-700 flex items-center gap-1">
-                  {showGroupBadge && (
+                  {showGroupBadge && match.group && (
                     <span className="bg-indigo-100 text-indigo-700 px-1.5 py-0.5 rounded font-semibold">
                       {match.group}
                     </span>
                   )}
-                  J{match.round} · {match.venue}
+                  {roundLabel(match)} · {match.venue}
                   {isPersisted && <SavedCheck />}
                   {isLocked && (
                     <span className="ml-1 inline-flex items-center gap-0.5 text-[10px] font-semibold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
