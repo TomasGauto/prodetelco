@@ -32,6 +32,10 @@ const PTS_GOAL_DIFF = 1;
 
 const isNum = (v) => typeof v === "number" && !Number.isNaN(v);
 
+// Un partido es de eliminatorias si su round no es numerico (ej. "R32") o no
+// tiene group (los de grupos siempre tienen letra de grupo).
+const isKnockout = (m) => (m.round != null && Number.isNaN(Number(m.round))) || !m.group;
+
 /**
  * Puntos de una prediccion de grupos contra el resultado real.
  * @returns {number}
@@ -96,7 +100,8 @@ const run = async () => {
   console.log(`Partidos: ${matchesSnap.size} (con resultado cargado: ${finished})`);
 
   // Acumula puntos por usuario.
-  const points = new Map(); // uid -> total
+  const points = new Map(); // uid -> total (grupos + eliminatorias)
+  const koPoints = new Map(); // uid -> solo eliminatorias (arranca de 0)
   let scoredPreds = 0;
   let skippedKnockout = 0;
 
@@ -104,7 +109,7 @@ const run = async () => {
     const p = d.data();
     if (!p.userId || !p.matchId) return;
 
-    // Predicciones de knockout (winnerId, sin homeScore/awayScore) -> se ignoran por ahora.
+    // Predicciones viejas de knockout por ganador (winnerId, sin marcador) -> se ignoran.
     if (!isNum(p.homeScore) || !isNum(p.awayScore)) {
       if (p.winnerId !== undefined) skippedKnockout++;
       return;
@@ -115,6 +120,7 @@ const run = async () => {
 
     const pts = scoreGroupPrediction(p, match);
     points.set(p.userId, (points.get(p.userId) || 0) + pts);
+    if (isKnockout(match)) koPoints.set(p.userId, (koPoints.get(p.userId) || 0) + pts);
     if (pts > 0) scoredPreds++;
   });
 
@@ -126,19 +132,20 @@ const run = async () => {
   const updates = [];
   usersSnap.forEach((d) => {
     const newTotal = points.get(d.id) || 0;
+    const koTotal = koPoints.get(d.id) || 0;
     const oldTotal = d.data().totalPoints || 0;
-    updates.push({ uid: d.id, nickname: d.data().nickname || "—", oldTotal, newTotal });
+    updates.push({ uid: d.id, nickname: d.data().nickname || "—", oldTotal, newTotal, koTotal });
   });
 
   updates.sort((a, b) => b.newTotal - a.newTotal);
 
-  console.log("\nRanking calculado:");
-  console.log("─".repeat(48));
+  console.log("\nRanking calculado (total · eliminatorias):");
+  console.log("─".repeat(56));
   updates.forEach((u, i) => {
     const arrow = u.newTotal !== u.oldTotal ? `  (antes ${u.oldTotal})` : "";
-    console.log(`${String(i + 1).padStart(2)}. ${u.nickname.padEnd(22)} ${String(u.newTotal).padStart(4)} pts${arrow}`);
+    console.log(`${String(i + 1).padStart(2)}. ${u.nickname.padEnd(22)} ${String(u.newTotal).padStart(4)} pts · elim ${u.koTotal}${arrow}`);
   });
-  console.log("─".repeat(48));
+  console.log("─".repeat(56));
   console.log(`Usuarios: ${updates.length} · predicciones que sumaron: ${scoredPreds}\n`);
 
   if (DRY_RUN) {
@@ -154,7 +161,7 @@ const run = async () => {
     for (const u of updates.slice(i, i + 500)) {
       batch.set(
         db.collection("users").doc(u.uid),
-        { totalPoints: u.newTotal, pointsUpdatedAt: now },
+        { totalPoints: u.newTotal, knockoutPoints: u.koTotal, pointsUpdatedAt: now },
         { merge: true }
       );
       written++;

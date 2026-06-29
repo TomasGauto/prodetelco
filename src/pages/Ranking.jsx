@@ -12,6 +12,9 @@ const medal = (i) => ['🥇', '🥈', '🥉'][i] ?? null;
 
 const displayName = (u) => u?.nickname || 'Jugador';
 
+// Partido de eliminatorias: round no numérico (ej. "R32") o sin group.
+const isKnockoutMatch = (m) => (m?.round != null && Number.isNaN(Number(m.round))) || !m?.group;
+
 const Ranking = () => {
   const [tab, setTab] = useState('prode');
   const [users, setUsers] = useState([]);
@@ -23,6 +26,7 @@ const Ranking = () => {
 
   const [matchesMap, setMatchesMap] = useState(null);
   const [expandedUid, setExpandedUid] = useState(null);
+  const [koExpandedUid, setKoExpandedUid] = useState(null);
   const [dtPlayersMap, setDtPlayersMap] = useState(null);
   const [dtExpandedUid, setDtExpandedUid] = useState(null);
 
@@ -90,6 +94,13 @@ const Ranking = () => {
     return [...users].sort((a, b) => (b.totalPoints || 0) - (a.totalPoints || 0));
   }, [users]);
 
+  const sortedKo = useMemo(() => {
+    return [...users].sort((a, b) => {
+      const diff = (b.knockoutPoints || 0) - (a.knockoutPoints || 0);
+      return diff !== 0 ? diff : displayName(a).localeCompare(displayName(b));
+    });
+  }, [users]);
+
   const sortedDt = useMemo(() => {
     return [...dtSquads]
       .map((s) => ({ ...s, dtPts: dtTotal(s, dtLiveIndex) }))
@@ -131,6 +142,17 @@ const Ranking = () => {
             }`}
           >
             Prode
+          </button>
+          <button
+            type="button"
+            onClick={() => setTab('ko')}
+            className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors ${
+              tab === 'ko'
+                ? 'bg-white text-indigo-700 shadow-sm'
+                : 'text-gray-500 hover:text-gray-700'
+            }`}
+          >
+            Eliminatorias
           </button>
           <button
             type="button"
@@ -226,6 +248,63 @@ const Ranking = () => {
               </div>
             </div>
           </>
+        )}
+
+        {tab === 'ko' && (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="px-5 py-3 border-b border-gray-100 flex items-center justify-between">
+              <h2 className="text-sm font-semibold text-gray-500 uppercase tracking-wide">
+                Eliminatorias
+              </h2>
+              <p className="text-[11px] text-gray-400">Solo mano a mano · arranca de 0</p>
+            </div>
+
+            <div className="divide-y divide-gray-100">
+              {sortedKo.map((u, i) => {
+                const isOpen = koExpandedUid === u.id;
+                const pts = u.knockoutPoints || 0;
+                return (
+                  <div key={u.id}>
+                    <button
+                      type="button"
+                      onClick={() => setKoExpandedUid((cur) => (cur === u.id ? null : u.id))}
+                      aria-expanded={isOpen}
+                      className={`w-full flex items-center gap-4 px-5 py-3.5 text-left transition-colors ${
+                        isOpen ? 'bg-indigo-50' : 'hover:bg-indigo-50'
+                      }`}
+                    >
+                      <div className="w-7 shrink-0 text-center">
+                        {medal(i) && pts > 0
+                          ? <span className="text-lg">{medal(i)}</span>
+                          : <span className="text-sm font-semibold text-gray-400">{i + 1}</span>}
+                      </div>
+                      <UserAvatar
+                        user={{ displayName: u.nickname }}
+                        userData={u}
+                        size="md"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-gray-900 truncate">{displayName(u)}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-lg font-bold text-indigo-600">{pts}</p>
+                        <p className="text-xs text-gray-400">pts</p>
+                      </div>
+                      <svg
+                        className={`w-4 h-4 shrink-0 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`}
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                      >
+                        <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.17l3.71-3.94a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                      </svg>
+                    </button>
+                    {isOpen && <RankingBreakdown uid={u.id} matchesMap={matchesMap} matchFilter={isKnockoutMatch} />}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         )}
 
         {tab === 'dt' && (

@@ -16,7 +16,7 @@ const Flag = ({ teamId, alt }) => {
  * Desglose de puntos de un usuario: por cada partido jugado que pronostico,
  * muestra su pronostico, el resultado real y cuantos puntos sumo.
  */
-const RankingBreakdown = ({ uid, matchesMap }) => {
+const RankingBreakdown = ({ uid, matchesMap, matchFilter }) => {
   const [preds, setPreds] = useState(null);
 
   useEffect(() => {
@@ -47,13 +47,14 @@ const RankingBreakdown = ({ uid, matchesMap }) => {
     for (const p of preds) {
       const m = matchesMap[p.matchId];
       if (!m) continue;
+      if (matchFilter && !matchFilter(m)) continue;
       const b = scoreBreakdown(p, m);
       if (!b) continue; // partido sin resultado o prediccion incompleta
       rows.push({ id: p.matchId, m, p, b });
     }
     rows.sort((a, z) => (a.m.date?.seconds || 0) - (z.m.date?.seconds || 0));
     return rows;
-  }, [preds, matchesMap]);
+  }, [preds, matchesMap, matchFilter]);
 
   if (!items) {
     return <p className="px-5 py-4 text-sm text-gray-400">Cargando desglose...</p>;
