@@ -12,7 +12,8 @@
 //   predictions/{id}  -> { userId, matchId, homeScore, awayScore }   (fase de grupos)
 //   users/{uid}       -> se actualiza { totalPoints, pointsUpdatedAt }
 //
-// Solo se puntua la FASE DE GRUPOS (el knockout todavia no esta en vivo).
+// Rankings SEPARADOS: totalPoints = fase de grupos, knockoutPoints = eliminatorias.
+// El knockout nunca suma al total de grupos.
 
 import { existsSync, readFileSync } from "node:fs";
 import { readdirSync } from "node:fs";
@@ -99,8 +100,8 @@ const run = async () => {
   });
   console.log(`Partidos: ${matchesSnap.size} (con resultado cargado: ${finished})`);
 
-  // Acumula puntos por usuario.
-  const points = new Map(); // uid -> total (grupos + eliminatorias)
+  // Acumula puntos por usuario. Grupos y eliminatorias son rankings SEPARADOS.
+  const points = new Map(); // uid -> puntos de FASE DE GRUPOS (el knockout NO suma)
   const koPoints = new Map(); // uid -> solo eliminatorias (arranca de 0)
   let scoredPreds = 0;
   let skippedKnockout = 0;
@@ -119,8 +120,12 @@ const run = async () => {
     if (!match || !isNum(match.homeScore) || !isNum(match.awayScore)) return; // partido sin resultado
 
     const pts = scoreGroupPrediction(p, match);
-    points.set(p.userId, (points.get(p.userId) || 0) + pts);
-    if (isKnockout(match)) koPoints.set(p.userId, (koPoints.get(p.userId) || 0) + pts);
+    // El knockout va SOLO al ranking de eliminatorias; nunca al de grupos.
+    if (isKnockout(match)) {
+      koPoints.set(p.userId, (koPoints.get(p.userId) || 0) + pts);
+    } else {
+      points.set(p.userId, (points.get(p.userId) || 0) + pts);
+    }
     if (pts > 0) scoredPreds++;
   });
 
@@ -139,7 +144,7 @@ const run = async () => {
 
   updates.sort((a, b) => b.newTotal - a.newTotal);
 
-  console.log("\nRanking calculado (total · eliminatorias):");
+  console.log("\nRanking calculado (grupos · eliminatorias):");
   console.log("─".repeat(56));
   updates.forEach((u, i) => {
     const arrow = u.newTotal !== u.oldTotal ? `  (antes ${u.oldTotal})` : "";
